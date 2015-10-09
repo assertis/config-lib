@@ -1,3 +1,3 @@
-# Simple configuration library #  
+# Simple configuration library
 
 TODO
