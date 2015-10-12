@@ -45,6 +45,8 @@ Library is also providing `Assertis\Configuration\ConfigurationFactory` to creat
  
 * Environment is read from  `$_SERVER['ENV']` or `getenv('ENV')`
 
+* When environment is default (dev) or test, configuration structure will be tested
+
 * You can get value using path, for example: `rdis.db.user`
 
 * When you are asking for key when value is array, this value will be changed to `Assertis\Configuration\Collection\ConfigurationArray`
@@ -74,6 +76,7 @@ To use this library add the following to your Silex application:
 ```php
 $app->register(new ConfigurationProvider(), [
     'config.driver' => new IniDriver($app['dir.root'] . '/configs'),
-    'config.validator' => null
+    'config.validator' => $app['validator'],
+    'config.validator.constraints' => null
 ]);
 ```

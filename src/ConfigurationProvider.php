@@ -22,6 +22,7 @@ class ConfigurationProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $app['config.validator'] = null;
+        $app['config.validator.constraints'] = null;
 
         $app['config.helper'] = $app->share(function (Application $app) {
             return new ConfigurationHelper($app);
@@ -55,7 +56,7 @@ class ConfigurationProvider implements ServiceProviderInterface
             /** @var ConfigurationFactory $factory */
             $factory = $app['config.factory'];
 
-            return $factory->load($helper->getEnvironment(), $helper->getCommon());
+            return $factory->load($helper->getEnvironment(), $helper->getCommon(), $helper->getValidationConstraints());
         });
     }
 

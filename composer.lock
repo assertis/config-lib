@@ -312,12 +312,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/event-dispatcher.git",
-                "reference": "43ab0034f592e0a8c85441c4f6bc521b3160fc16"
+                "reference": "110aca14f1c01c919ad5244abd8aadada1f4602b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/43ab0034f592e0a8c85441c4f6bc521b3160fc16",
-                "reference": "43ab0034f592e0a8c85441c4f6bc521b3160fc16",
+                "url": "https://api.github.com/repos/symfony/event-dispatcher/zipball/110aca14f1c01c919ad5244abd8aadada1f4602b",
+                "reference": "110aca14f1c01c919ad5244abd8aadada1f4602b",
                 "shasum": ""
             },
             "require": {
@@ -361,7 +361,7 @@
             ],
             "description": "Symfony EventDispatcher Component",
             "homepage": "https://symfony.com",
-            "time": "2015-10-11 09:14:55"
+            "time": "2015-10-12 10:22:36"
         },
         {
             "name": "symfony/http-foundation",
@@ -631,12 +631,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/validator.git",
-                "reference": "b6f41238160ff3c3cb869fed25339881effaf8d8"
+                "reference": "efbe85f9df3a7ff6af608250be8caf2ee9db5011"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/validator/zipball/b6f41238160ff3c3cb869fed25339881effaf8d8",
-                "reference": "b6f41238160ff3c3cb869fed25339881effaf8d8",
+                "url": "https://api.github.com/repos/symfony/validator/zipball/efbe85f9df3a7ff6af608250be8caf2ee9db5011",
+                "reference": "efbe85f9df3a7ff6af608250be8caf2ee9db5011",
                 "shasum": ""
             },
             "require": {
@@ -692,7 +692,7 @@
             ],
             "description": "Symfony Validator Component",
             "homepage": "https://symfony.com",
-            "time": "2015-10-11 08:29:26"
+            "time": "2015-10-12 09:25:14"
         },
         {
             "name": "symfony/yaml",
@@ -700,12 +700,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "725887b209844abda9d864de722515d0fc13dd75"
+                "reference": "6941545de416c530d122618e31acfd99081dd712"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/725887b209844abda9d864de722515d0fc13dd75",
-                "reference": "725887b209844abda9d864de722515d0fc13dd75",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/6941545de416c530d122618e31acfd99081dd712",
+                "reference": "6941545de416c530d122618e31acfd99081dd712",
                 "shasum": ""
             },
             "require": {
@@ -738,7 +738,7 @@
             ],
             "description": "Symfony Yaml Component",
             "homepage": "https://symfony.com",
-            "time": "2015-10-11 08:29:26"
+            "time": "2015-10-12 10:20:37"
         }
     ],
     "packages-dev": [

@@ -6,6 +6,7 @@ use Assertis\Configuration\Collection\ConfigurationArray;
 use Assertis\Configuration\Collection\LazyConfigurationArray;
 use Assertis\Configuration\Drivers\DriverInterface;
 use Silex\Application;
+use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
@@ -68,6 +69,14 @@ class ConfigurationHelper
     public function getValidator()
     {
         return $this->app['config.validator'];
+    }
+
+    /**
+     * @return null|Constraint|Constraint[]
+     */
+    public function getValidationConstraints()
+    {
+        return $this->app['config.validator.constraints'];
     }
 
 

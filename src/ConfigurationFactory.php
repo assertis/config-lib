@@ -7,6 +7,8 @@ use Assertis\Configuration\Collection\LazyConfigurationArray;
 use Assertis\Configuration\Drivers\DriverInterface;
 use Assertis\Configuration\Drivers\AbstractLazyDriver;
 use Exception;
+use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
@@ -59,15 +61,16 @@ class ConfigurationFactory
      * @param string $key Main key of configuration
      * @param array $default
      * @param bool $cache
+     * @param Constraint|Constraint[]|null $constraints
      * @return ConfigurationArray
      */
-    public function load($key = self::DEFAULT_KEY, array $default = [], $cache = true)
+    public function load($key = self::DEFAULT_KEY, array $default = [], $constraints = null, $cache = true)
     {
         if ($cache && isset($this->cache[$key])) {
             return $cache[$key];
         }
 
-        $configuration = self::init($this->provider, $key, $default, $this->validator);
+        $configuration = self::init($this->provider, $key, $default, $this->validator, $constraints);
 
         if ($cache) {
             $this->cache[$key] = $configuration;
@@ -83,13 +86,15 @@ class ConfigurationFactory
      * @param $key
      * @param array $default
      * @param ValidatorInterface|null $validator
+     * @param Constraint|Constraint[]|null $constraints
      * @return ConfigurationArray
      * @throws Exception
      */
     public static function init(DriverInterface $provider,
                                 $key = self::DEFAULT_KEY,
                                 array $default = [],
-                                ValidatorInterface $validator = null)
+                                ValidatorInterface $validator = null,
+                                $constraints = null)
     {
         //If configuration is lazy we can't validate structure or key
         if ($provider instanceof AbstractLazyDriver) {
@@ -102,9 +107,20 @@ class ConfigurationFactory
         //Load configuration
         $settings = $provider->getSettings($key);
 
-        //Validate settings structure if we have validation and key is default one
-        if (!empty($validator) && $key === self::DEFAULT_KEY) {
-            $validator->validate($settings);
+        //Validate settings structure if we have validation and key is default or test
+        if (!empty($validator) && !empty($constraints) && ($key === self::DEFAULT_KEY || $key === self::ENV_TEST)) {
+            $violations = $validator->validate($settings, $constraints);
+
+            if (!empty($violations)) {
+                $error = 'Validation errors:';
+
+                /** @var ConstraintViolation $violation */
+                foreach ($violations as $violation) {
+                    $error .= '\n [' . $violation->getPropertyPath() . ']' . $violation->getMessage();
+                }
+
+                throw new Exception("Configuration $key has bad structure. $error");
+            }
         }
 
         return new ConfigurationArray(array_merge($settings, $default));
