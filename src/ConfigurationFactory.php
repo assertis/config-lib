@@ -2,6 +2,8 @@
 
 namespace Assertis\Configuration;
 
+use Assertis\Configuration\Collection\ConfigurationArray;
+use Assertis\Configuration\Collection\LazyConfigurationArray;
 use Assertis\Configuration\Drivers\DriverInterface;
 use Assertis\Configuration\Drivers\AbstractLazyDriver;
 use Exception;
@@ -38,6 +40,7 @@ class ConfigurationFactory
 
     const ENV_DEV = 'dev';
     const ENV_TEST = 'test';
+    const ENV_COMMON = 'common';
 
     /**
      * ConfigurationFactory constructor.

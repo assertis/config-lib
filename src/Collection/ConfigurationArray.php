@@ -1,6 +1,6 @@
 <?php
 
-namespace Assertis\Configuration;
+namespace Assertis\Configuration\Collection;
 
 use ArrayAccess;
 use ArrayIterator;
@@ -9,7 +9,7 @@ use IteratorAggregate;
 
 /**
  * Class ConfigurationArray
- * @package Configuration
+ * @package Assertis\Configuration\Collection
  * @author Maciej Romanski <maciej.romanski@assertis.co.uk>
  *
  * Class provide all method needed for configuration
@@ -30,6 +30,16 @@ class ConfigurationArray implements IteratorAggregate, ArrayAccess, Countable
     public function __construct(array $settings = [])
     {
         $this->settings = $settings;
+    }
+
+    /**
+     * Return raw settings
+     *
+     * @return array
+     */
+    public function getSettings()
+    {
+        return $this->settings;
     }
 
     /**
@@ -77,7 +87,8 @@ class ConfigurationArray implements IteratorAggregate, ArrayAccess, Countable
      * @param $key
      * @return $this
      */
-    public function remove($key){
+    public function remove($key)
+    {
         $this->offsetUnset($key);
         return $this;
     }

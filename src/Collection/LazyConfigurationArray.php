@@ -1,6 +1,6 @@
 <?php
 
-namespace Assertis\Configuration;
+namespace Assertis\Configuration\Collection;
 
 use Assertis\Configuration\Drivers\AbstractLazyDriver;
 use Exception;
@@ -8,7 +8,7 @@ use Exception;
 /**
  * Configuration array for lazy configs
  *
- * @package Assertis\Configuration
+ * @package Assertis\Configuration\Collection
  * @author Maciej Romanski <maciej.romanski@assertis.co.uk>
  */
 class LazyConfigurationArray extends ConfigurationArray

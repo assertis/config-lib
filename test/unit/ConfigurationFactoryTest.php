@@ -3,6 +3,7 @@
 namespace Assertis\Configuration;
 
 
+use Assertis\Configuration\Collection\ConfigurationArray;
 use Assertis\Configuration\Drivers\SourceDriver;
 
 class ConfigurationFactoryTest extends \PHPUnit_Framework_TestCase

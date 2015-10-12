@@ -17,6 +17,11 @@ abstract class AbstractFileDriver implements DriverInterface
     private $path;
 
     /**
+     * @var string
+     */
+    private $fileExtension;
+
+    /**
      * @var array[]
      */
     private $cache = [];
@@ -71,6 +76,14 @@ abstract class AbstractFileDriver implements DriverInterface
         }
 
         return $this->path . $name . $this->fileExtension;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFileExtension()
+    {
+        return $this->fileExtension;
     }
 
     /**

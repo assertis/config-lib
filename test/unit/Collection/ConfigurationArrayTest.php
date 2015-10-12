@@ -1,6 +1,6 @@
 <?php
 
-namespace Assertis\Configuration;
+namespace Assertis\Configuration\Collection;
 
 
 class ConfigurationArrayTest extends \PHPUnit_Framework_TestCase
