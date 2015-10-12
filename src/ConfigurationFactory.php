@@ -67,7 +67,7 @@ class ConfigurationFactory
             return $cache[$key];
         }
 
-        $configuration = $this->init($this->provider, $key, $default, $this->validator);
+        $configuration = self::init($this->provider, $key, $default, $this->validator);
 
         if ($cache) {
             $this->cache[$key] = $configuration;

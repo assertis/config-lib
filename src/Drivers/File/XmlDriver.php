@@ -13,15 +13,9 @@ class XmlDriver extends AbstractFileDriver
     const FILE_EXTENSION = 'xml';
 
     /**
-     * @var bool
-     */
-    private $assoc;
-
-    /**
      * @param string $path
-     * @param bool|true $assoc
      */
-    public function __construct($path, $assoc = true)
+    public function __construct($path)
     {
         parent::__construct($path, self::FILE_EXTENSION);
     }
@@ -35,6 +29,6 @@ class XmlDriver extends AbstractFileDriver
      */
     protected function parse($file)
     {
-        return json_decode(json_encode((array)simplexml_load_string(file_get_contents($file))), $this->assoc);
+        return json_decode(json_encode((array)simplexml_load_string(file_get_contents($file))), true);
     }
 }

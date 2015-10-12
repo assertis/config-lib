@@ -41,15 +41,21 @@ class ConfigurationProvider implements ServiceProviderInterface
             }
         });
 
+        $app['config.factory'] = $app->share(function ($app){
+            /** @var ConfigurationHelper $helper */
+            $helper = $app['config.helper'];
+
+            return new ConfigurationFactory($helper->getDriver(), $helper->getValidator());
+        });
+
         $app['config'] = $app->share(function ($app) {
             /** @var ConfigurationHelper $helper */
             $helper = $app['config.helper'];
-            return ConfigurationFactory::init(
-                $helper->getDriver(),
-                $helper->getEnvironment(),
-                $helper->getCommon(),
-                $helper->getValidator()
-            );
+
+            /** @var ConfigurationFactory $factory */
+            $factory = $app['config.factory'];
+
+            return $factory->load($helper->getEnvironment(), $helper->getCommon());
         });
     }
 

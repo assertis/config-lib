@@ -11,17 +11,10 @@ class JsonDriver extends AbstractFileDriver
     const FILE_EXTENSION = 'json';
 
     /**
-     * @var bool
-     */
-    private $assoc;
-
-    /**
      * @param string $path
-     * @param bool|true $assoc
      */
-    public function __construct($path, $assoc = true)
+    public function __construct($path)
     {
-        $this->assoc = $assoc;
         parent::__construct($path, self::FILE_EXTENSION);
     }
 
@@ -30,7 +23,7 @@ class JsonDriver extends AbstractFileDriver
      */
     protected function parse($file)
     {
-        return json_decode(file_get_contents($file), $this->assoc);
+        return json_decode(file_get_contents($file), true);
     }
 
 }
