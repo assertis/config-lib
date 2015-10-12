@@ -52,7 +52,7 @@ Library is also providing `Assertis\Configuration\ConfigurationFactory` to creat
 
 To install this library add the following to your `composer.json` file and run `composer update`:
 
-```
+```json
   "repositories": [
     {
       "type": "vcs",
@@ -61,7 +61,7 @@ To install this library add the following to your `composer.json` file and run `
   ],
   "require": {
     "assertis/config-lib": "dev-master"
-  },
+  }
 ```
 
 ## Usage
