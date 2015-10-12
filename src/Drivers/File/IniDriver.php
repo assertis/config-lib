@@ -1,14 +1,14 @@
 <?php
 
-namespace Assertis\Configuration\Providers\File;
+namespace Assertis\Configuration\Drivers\File;
 
-use Assertis\Configuration\Providers;
+use Assertis\Configuration\Drivers;
 
 /**
- * @package Assertis\Configuration\Providers\File
+ * @package Assertis\Configuration\Drivers\File
  * @author Maciej Romanski <maciej.romanski@assertis.co.uk>
  */
-class IniProvider extends AbstractFileProvider
+class IniDriver extends AbstractFileDriver
 {
     const FILE_EXTENSION = 'ini';
 

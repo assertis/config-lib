@@ -1,14 +1,14 @@
 <?php
 
-namespace Assertis\Configuration\Providers;
+namespace Assertis\Configuration\Drivers;
 
 /**
  * Provider for configuration in class, array based
  *
- * @package Assertis\Configuration\Providers
+ * @package Assertis\Configuration\Drivers
  * @author Maciej Romanski <maciej.romanski@assertis.co.uk>
  */
-abstract class AbstractClassProvider implements ConfigurationProviderInterface
+abstract class AbstractClassDriver implements DriverInterface
 {
     /**
      * @inheritdoc

@@ -2,7 +2,7 @@
 
 namespace Assertis\Configuration;
 
-use Assertis\Configuration\Providers\AbstractLazyConfigurationProvider;
+use Assertis\Configuration\Drivers\AbstractLazyDriver;
 use Exception;
 
 /**
@@ -14,15 +14,15 @@ use Exception;
 class LazyConfigurationArray extends ConfigurationArray
 {
     /**
-     * @var AbstractLazyConfigurationProvider
+     * @var AbstractLazyDriver
      */
     private $provider;
 
     /**
      * LazyConfigurationArray constructor.
-     * @param AbstractLazyConfigurationProvider $provider
+     * @param AbstractLazyDriver $provider
      */
-    public function __construct(AbstractLazyConfigurationProvider $provider)
+    public function __construct(AbstractLazyDriver $provider)
     {
         $this->provider = $provider;
     }

@@ -1,6 +1,6 @@
 <?php
 
-namespace Assertis\Configuration\Providers;
+namespace Assertis\Configuration\Drivers;
 
 use Assertis\Configuration\ConfigurationArray;
 use Exception;
@@ -8,10 +8,10 @@ use Exception;
 /**
  * Interface for lazy loading of configuration. For example for database stored configurations.
  *
- * @package Assertis\Configuration\Providers
+ * @package Assertis\Configuration\Drivers
  * @author Maciej Romanski <maciej.romanski@assertis.co.uk>
  */
-abstract class AbstractLazyConfigurationProvider implements ConfigurationProviderInterface
+abstract class AbstractLazyDriver implements DriverInterface
 {
     /**
      * Return searched configuration

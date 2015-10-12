@@ -3,19 +3,19 @@
 namespace Assertis\Configuration;
 
 
-use Assertis\Configuration\Providers\SourceProvider;
+use Assertis\Configuration\Drivers\SourceDriver;
 
 class ConfigurationFactoryTest extends \PHPUnit_Framework_TestCase
 {
     public function testInit()
     {
-        $settings = ConfigurationFactory::init(new SourceProvider(['dev' => ['something' => 'asd']]));
+        $settings = ConfigurationFactory::init(new SourceDriver(['dev' => ['something' => 'asd']]));
         $this->assertTrue($settings instanceof ConfigurationArray);
     }
 
     public function testByConstruct()
     {
-        $factory = new ConfigurationFactory(new SourceProvider(['dev' => ['something' => 'asd']]));
+        $factory = new ConfigurationFactory(new SourceDriver(['dev' => ['something' => 'asd']]));
         $this->assertTrue($factory->load() instanceof ConfigurationArray);
     }
 
@@ -24,7 +24,7 @@ class ConfigurationFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testBadStructure()
     {
-        $factory = new ConfigurationFactory(new SourceProvider([]));
+        $factory = new ConfigurationFactory(new SourceDriver([]));
         $factory->load();
     }
 }

@@ -1,14 +1,14 @@
 <?php
 
-namespace Assertis\Configuration\Providers;
+namespace Assertis\Configuration\Drivers;
 
 /**
  * Interface for providing configuration data
  *
- * @package Assertis\Configuration\Providers
+ * @package Assertis\Configuration\Drivers
  * @author Maciej Romanski <maciej.romanski@assertis.co.uk>
  */
-interface ConfigurationProviderInterface
+interface DriverInterface
 {
     /**
      * Return array with settings

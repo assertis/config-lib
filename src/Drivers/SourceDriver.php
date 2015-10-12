@@ -1,12 +1,12 @@
 <?php
 
-namespace Assertis\Configuration\Providers;
+namespace Assertis\Configuration\Drivers;
 
 /**
- * @package Assertis\Configuration\Providers
+ * @package Assertis\Configuration\Drivers
  * @author Maciej Romanski <maciej.romanski@assertis.co.uk>
  */
-class SourceProvider extends AbstractClassProvider
+class SourceDriver extends AbstractClassDriver
 {
     /**
      * @var array

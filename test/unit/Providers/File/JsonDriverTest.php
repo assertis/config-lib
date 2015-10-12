@@ -1,9 +1,9 @@
 <?php
 
-namespace Assertis\Configuration\Providers\File;
+namespace Assertis\Configuration\Drivers\File;
 
 
-class JsonProviderTest extends \PHPUnit_Framework_TestCase
+class JsonDriverTest extends \PHPUnit_Framework_TestCase
 {
     private $path;
 
@@ -14,7 +14,7 @@ class JsonProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testLoadingFile()
     {
-        $provider = new JsonProvider($this->path);
+        $provider = new JsonDriver($this->path);
         $settings = $provider->getSettings('test');
         $this->assertNotEmpty($settings);
     }

@@ -1,15 +1,15 @@
 <?php
 
-namespace Assertis\Configuration\Providers\File;
+namespace Assertis\Configuration\Drivers\File;
 
-use Assertis\Configuration\Providers\ConfigurationProviderInterface;
+use Assertis\Configuration\Drivers\DriverInterface;
 use Exception;
 
 /**
- * @package Assertis\Configuration\Providers
+ * @package Assertis\Configuration\Drivers
  * @author Maciej Romanski <maciej.romanski@assertis.co.uk>
  */
-abstract class AbstractFileProvider implements ConfigurationProviderInterface
+abstract class AbstractFileDriver implements DriverInterface
 {
     /**
      * @var string

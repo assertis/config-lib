@@ -1,12 +1,12 @@
 <?php
 
-namespace Assertis\Configuration\Providers\File;
+namespace Assertis\Configuration\Drivers\File;
 
 /**
- * @package Assertis\Configuration\Providers\File
+ * @package Assertis\Configuration\Drivers\File
  * @author Maciej Romanski <maciej.romanski@assertis.co.uk>
  */
-class JsonProvider extends AbstractFileProvider
+class JsonDriver extends AbstractFileDriver
 {
     const FILE_EXTENSION = 'json';
 

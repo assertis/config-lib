@@ -1,6 +1,6 @@
 <?php
 
-namespace Assertis\Configuration\Providers;
+namespace Assertis\Configuration\Drivers;
 
 use Exception;
 use PDO;
@@ -11,11 +11,11 @@ use UnexpectedValueException;
 /**
  * Provide lazy configuration from database
  *
- * @package Assertis\Configuration\Providers
+ * @package Assertis\Configuration\Drivers
  * @author Maciej Romanski <maciej.romanski@assertis.co.uk>
  * @author Michał Tatarynowicz <michal@assertis.co.uk>
  */
-class DatabaseProvider extends AbstractLazyConfigurationProvider
+class DatabaseDriver extends AbstractLazyDriver
 {
     const SQL_GET_BY_KEY = "SELECT `value` FROM %s WHERE `key` = :key;";
 

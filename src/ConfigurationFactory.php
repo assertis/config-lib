@@ -2,8 +2,8 @@
 
 namespace Assertis\Configuration;
 
-use Assertis\Configuration\Providers\ConfigurationProviderInterface;
-use Assertis\Configuration\Providers\AbstractLazyConfigurationProvider;
+use Assertis\Configuration\Drivers\DriverInterface;
+use Assertis\Configuration\Drivers\AbstractLazyDriver;
 use Exception;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -16,7 +16,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class ConfigurationFactory
 {
     /**
-     * @var ConfigurationProviderInterface
+     * @var DriverInterface
      */
     private $provider;
 
@@ -41,10 +41,10 @@ class ConfigurationFactory
 
     /**
      * ConfigurationFactory constructor.
-     * @param ConfigurationProviderInterface $provider
+     * @param DriverInterface $provider
      * @param null|ValidatorInterface $validator
      */
-    public function __construct(ConfigurationProviderInterface $provider, ValidatorInterface $validator = null)
+    public function __construct(DriverInterface $provider, ValidatorInterface $validator = null)
     {
         $this->provider = $provider;
         $this->validator = $validator;
@@ -76,20 +76,20 @@ class ConfigurationFactory
     /**
      * Init configuration and return configuration object
      *
-     * @param ConfigurationProviderInterface $provider
+     * @param DriverInterface $provider
      * @param $key
      * @param array $default
      * @param ValidatorInterface|null $validator
      * @return ConfigurationArray
      * @throws Exception
      */
-    public static function init(ConfigurationProviderInterface $provider,
+    public static function init(DriverInterface $provider,
                                 $key = self::DEFAULT_KEY,
                                 array $default = [],
                                 ValidatorInterface $validator = null)
     {
         //If configuration is lazy we can't validate structure or key
-        if ($provider instanceof AbstractLazyConfigurationProvider) {
+        if ($provider instanceof AbstractLazyDriver) {
             return new LazyConfigurationArray($provider);
         }
 
@@ -109,11 +109,11 @@ class ConfigurationFactory
 
     /**
      * Validate configuration array if we have key etc.
-     * @param ConfigurationProviderInterface $provider
+     * @param DriverInterface $provider
      * @param string $key key for configuration
      * @throws Exception
      */
-    private static function validateConfiguration(ConfigurationProviderInterface $provider, $key)
+    private static function validateConfiguration(DriverInterface $provider, $key)
     {
         if (!$provider->keyExists($key)) {
             throw new Exception("Configuration $key not found in configuration object");

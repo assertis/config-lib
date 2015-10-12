@@ -1,9 +1,9 @@
 <?php
 
-namespace Assertis\Configuration\Providers\File;
+namespace Assertis\Configuration\Drivers\File;
 
 
-class PhpProviderTest extends \PHPUnit_Framework_TestCase
+class PhpDriverTest extends \PHPUnit_Framework_TestCase
 {
     private $path;
 
@@ -14,7 +14,7 @@ class PhpProviderTest extends \PHPUnit_Framework_TestCase
 
     public function testLoadingFile()
     {
-        $provider = new PhpProvider($this->path);
+        $provider = new PhpDriver($this->path);
         $settings = $provider->getSettings('test');
         $this->assertNotEmpty($settings);
     }

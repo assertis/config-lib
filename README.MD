@@ -5,16 +5,16 @@ validate configuration on developer environment.
  
 We are providing 5 base type of configurations.
 
-* `Assertis\Configuration\Providers\SourceProvider` : simple provider, you can set array with configuration into constructor.
+* `Assertis\Configuration\Drivers\SourceProvider` : simple provider, you can set array with configuration into constructor.
 
-* `Assertis\Configuration\Providers\DatabaseProvider` : provider is using PDO connection to gain access to configuration from database.
+* `Assertis\Configuration\Drivers\DatabaseProvider` : provider is using PDO connection to gain access to configuration from database.
 This provider is returning `LazyConfiguration`.
 
-* `Assertis\Configuration\Providers\File\IniProvider` : configuration provided from `.ini` file
+* `Assertis\Configuration\Drivers\File\IniProvider` : configuration provided from `.ini` file
  
-* `Assertis\Configuration\Providers\File\JsonProvider` : configuration provided from `.json` file
+* `Assertis\Configuration\Drivers\File\JsonProvider` : configuration provided from `.json` file
 
-* `Assertis\Configuration\Providers\File\PhpProvider` : configuration provided from `.php` file. File should return array
+* `Assertis\Configuration\Drivers\File\PhpProvider` : configuration provided from `.php` file. File should return array
 with configuration. Ex:
 ```php
 <?php

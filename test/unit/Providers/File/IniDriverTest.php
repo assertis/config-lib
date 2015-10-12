@@ -1,9 +1,9 @@
 <?php
 
-namespace Assertis\Configuration\Providers\File;
+namespace Assertis\Configuration\Drivers\File;
 
 
-class IniProviderTest extends \PHPUnit_Framework_TestCase
+class IniDriverTest extends \PHPUnit_Framework_TestCase
 {
     private $path;
 
@@ -12,7 +12,7 @@ class IniProviderTest extends \PHPUnit_Framework_TestCase
     }
 
     public function testLoadingFile(){
-        $provider = new IniProvider($this->path);
+        $provider = new IniDriver($this->path);
         $settings = $provider->getSettings('test');
         $this->assertNotEmpty($settings);
     }
