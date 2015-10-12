@@ -40,9 +40,9 @@ class ConfigurationFactory
      */
     const DEFAULT_KEY = self::ENV_DEV;
 
-    const ENV_DEV = 'dev';
-    const ENV_TEST = 'test';
-    const ENV_COMMON = 'common';
+    const ENV_DEV = "dev";
+    const ENV_TEST = "test";
+    const ENV_COMMON = "common";
 
     /**
      * ConfigurationFactory constructor.
@@ -112,11 +112,17 @@ class ConfigurationFactory
             $violations = $validator->validate($settings, $constraints);
 
             if (!empty($violations)) {
-                $error = 'Validation errors:';
+                $error = "Validation errors:";
 
                 /** @var ConstraintViolation $violation */
                 foreach ($violations as $violation) {
-                    $error .= '\n [' . $violation->getPropertyPath() . ']' . $violation->getMessage();
+                    $error .= "\n";
+
+                    if (!empty($violation->getPropertyPath())) {
+                        $error .= "[" . $violation->getPropertyPath() . "]";
+                    }
+
+                    $error .= $violation->getMessage();
                 }
 
                 throw new Exception("Configuration $key has bad structure. $error");

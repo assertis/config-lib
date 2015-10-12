@@ -7,6 +7,7 @@ use Assertis\Configuration\Collection\ConfigurationArray;
 use Assertis\Configuration\Drivers\SourceDriver;
 use Silex\Application;
 use Silex\Provider\ValidatorServiceProvider;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class ConfigurationFactoryTest extends \PHPUnit_Framework_TestCase
 {
@@ -36,9 +37,13 @@ class ConfigurationFactoryTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \Exception
      */
-    public function testValidator(){
+    public function testValidator()
+    {
         $factory = new ConfigurationFactory(new SourceDriver(['dev' => ['something' => 'asd']]), $this->app['validator']);
-        $this->assertTrue($factory->load() instanceof ConfigurationArray);
+        $constraints = [
+            new Assert\Count(['min' => 2])
+        ];
+        $factory->load(ConfigurationFactory::DEFAULT_KEY, [], $constraints, true);
     }
 
     /**
