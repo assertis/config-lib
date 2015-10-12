@@ -15,7 +15,15 @@ This provider is returning `LazyConfiguration`.
 * `Assertis\Configuration\Providers\File\JsonProvider` : configuration provided from `.json` file
 
 * `Assertis\Configuration\Providers\File\PhpProvider` : configuration provided from `.php` file. File should return array
-with configuration. 
+with configuration. Ex:
+```php
+<?php
+  return [
+    'key' => 'value'
+  ];
+ ?>
+
+````
 
 We are returning configuration in 2 type of objects:
 
