@@ -1,5 +1,7 @@
 # Simple configuration library
 
+## Design
+
 Configuration library enables you to load configurations into application from different source also it give you way to
 validate configuration on developer environment.
  
@@ -24,7 +26,6 @@ with configuration. Ex:
  ?>
 
 ````
-
 We are returning configuration in 2 type of objects:
 
 * `Assertis\Configuration\ConfigurationArray` is array type object with some extra methods. More detail below.  
@@ -33,3 +34,43 @@ We are returning configuration in 2 type of objects:
 only use `get` method, others will throw `Exception`. 
 
 Library is also providing `Assertis\Configuration\ConfigurationFactory` to create configuration easily. 
+
+## Extras
+
+* Configuration will load "common" file if exists. File extension depends of driver type. If we are using
+ `IniDriver` for test env then `common.ini` will be loaded if exists. 
+ 
+* Environment is read from  `$_SERVER['ENV']` or `getenv('ENV')`
+
+* You can get value using path, for example: `rdis.db.user`
+
+* When you are asking for key when value is array, this value will be changed to `Assertis\Configuration\ConfigurationArray`
+
+* You can add easily extra drivers
+
+## Installation
+
+To install this library add the following to your `composer.json` file and run `composer update`:
+
+```
+  "repositories": [
+    {
+      "type": "vcs",
+      "url": "https://github.com/assertis/config-lib"
+    }
+  ],
+  "require": {
+    "assertis/config-lib": "dev-master"
+  },
+```
+
+## Usage
+
+To use this library add the following to your Silex application:
+
+```php
+$app->register(new ConfigurationProvider(), [
+    'config.driver' => new IniDriver($app['dir.root'] . '/configs')
+]);
+
+```
