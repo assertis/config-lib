@@ -24,4 +24,4 @@ We are returning configuration in 2 type of objects:
 * `Assertis\Configuration\LazyConfiguration` is simple array type object but with many limitations. Basically you can
 only use `get` method, others will throw `Exception`. 
 
-Library is also providing `ConfigurationFactory` to create configuration easily. 
+Library is also providing `Assertis\Configuration\ConfigurationFactory` to create configuration easily. 
