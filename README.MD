@@ -5,7 +5,7 @@ validate configuration on developer environment.
  
 We are providing 5 base type of configurations.
 
-* `Assertis\Configuration\Providers\SourceProvider` : the simple one provider, you can set configuration array into constructor.
+* `Assertis\Configuration\Providers\SourceProvider` : simple provider, you can set array with configuration into constructor.
 
 * `Assertis\Configuration\Providers\DatabaseProvider` : provider is using PDO connection to gain access to configuration from database.
 This provider is returning `LazyConfiguration`.
