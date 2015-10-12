@@ -112,4 +112,15 @@ class LazyConfigurationArray extends ConfigurationArray
     {
         throw new Exception("Method not allowed");
     }
+
+    /**
+     * @inheritdoc
+     * @throws Exception
+     */
+    public function getSettings()
+    {
+        throw new Exception("Method not allowed");
+    }
+
+
 }

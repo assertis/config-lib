@@ -21,6 +21,8 @@ class ConfigurationProvider implements ServiceProviderInterface
      */
     public function register(Application $app)
     {
+        $app['config.validator'] = null;
+
         $app['config.helper'] = $app->share(function (Application $app) {
             return new ConfigurationHelper($app);
         });
@@ -32,8 +34,8 @@ class ConfigurationProvider implements ServiceProviderInterface
                 return ConfigurationFactory::init($app['config.driver'], ConfigurationFactory::ENV_COMMON, [], null)
                     ->getSettings();
             } catch (Exception $e) {
-                //It will return exception if common file not exists. We don't bother of that : ).
                 unset($e);
+                //It will return exception if common file not exists. We don't bother of that : ).
             } finally {
                 return [];
             }
