@@ -24,7 +24,6 @@ with configuration. Ex:
     'key' => 'value'
   ];
  ?>
-
 ````
 We are returning configuration in 2 type of objects:
 
@@ -72,5 +71,4 @@ To use this library add the following to your Silex application:
 $app->register(new ConfigurationProvider(), [
     'config.driver' => new IniDriver($app['dir.root'] . '/configs')
 ]);
-
 ```
