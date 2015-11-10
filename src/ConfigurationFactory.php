@@ -40,9 +40,10 @@ class ConfigurationFactory
      */
     const DEFAULT_KEY = self::ENV_DEV;
 
-    const ENV_DEV = "dev";
-    const ENV_TEST = "test";
-    const ENV_COMMON = "common";
+    const ENV_DEV = 'dev';
+    const ENV_TEST = 'test';
+    const ENV_PROD = 'prod';
+    const ENV_COMMON = 'common';
 
     /**
      * ConfigurationFactory constructor.
