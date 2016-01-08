@@ -14,7 +14,11 @@ use Silex\ServiceProviderInterface;
  */
 class ConfigurationProvider implements ServiceProviderInterface
 {
-    const ENV_DEV = ConfigurationFactory::DEFAULT_KEY;
+    const ENV_KEY = 'ENV';
+    const ENV_DEFAULT = ConfigurationFactory::DEFAULT_KEY;
+
+    const TENANT_KEY = 'TENANT';
+    const TENANT_DEFAULT = 'default';
 
     /**
      * @param Application $app
@@ -29,6 +33,7 @@ class ConfigurationProvider implements ServiceProviderInterface
         });
 
         $app['config.environment'] = self::getEnv();
+        $app['config.tenant'] = self::getTenant();
 
         $app['config.common'] = $app->share(function ($app) {
             try {
@@ -61,21 +66,39 @@ class ConfigurationProvider implements ServiceProviderInterface
     }
 
     /**
+     * @param string $name
+     * @param string $default
      * @return string
      */
-    private static function getEnv()
+    private static function getValue($name, $default = null)
     {
-        $envVariable = self::getEnvironmentVariable();
+        $envVariable = self::getEnvironmentVariable($name);
         if (!empty($envVariable)) {
             return $envVariable;
         }
 
-        $serverVariable = self::getServerVariable();
+        $serverVariable = self::getServerVariable($name);
         if (!empty($serverVariable)) {
             return $serverVariable;
         }
 
-        return self::ENV_DEV;
+        return $default;
+    }
+
+    /**
+     * @return string
+     */
+    public static function getEnv()
+    {
+        return self::getValue(self::ENV_KEY, self::ENV_DEFAULT);
+    }
+
+    /**
+     * @return string
+     */
+    public static function getTenant()
+    {
+        return self::getValue(self::TENANT_KEY, self::TENANT_DEFAULT);
     }
 
     /**
@@ -83,7 +106,7 @@ class ConfigurationProvider implements ServiceProviderInterface
      */
     public static function isDev()
     {
-        return self::ENV_DEV === self::getEnv();
+        return self::ENV_DEFAULT === self::getEnv();
     }
 
     /**
@@ -91,9 +114,9 @@ class ConfigurationProvider implements ServiceProviderInterface
      *
      * @return string
      */
-    private static function getEnvironmentVariable()
+    private static function getEnvironmentVariable($name)
     {
-        return getenv('ENV');
+        return getenv($name);
     }
 
     /**
@@ -101,9 +124,9 @@ class ConfigurationProvider implements ServiceProviderInterface
      *
      * @return string
      */
-    private static function getServerVariable()
+    private static function getServerVariable($name)
     {
-        return !empty($_SERVER['ENV']) ? $_SERVER['ENV'] : null;
+        return !empty($_SERVER[$name]) ? $_SERVER[$name] : null;
     }
 
     /**
