@@ -31,4 +31,12 @@ class SourceDriver extends AbstractClassDriver
     {
         return $this->settings[$key];
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function keyExists($key)
+    {
+        return array_key_exists($key, $this->settings);
+    }
 }

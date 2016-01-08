@@ -4,8 +4,8 @@ namespace Assertis\Configuration;
 
 use Assertis\Configuration\Collection\ConfigurationArray;
 use Assertis\Configuration\Collection\LazyConfigurationArray;
-use Assertis\Configuration\Drivers\DriverInterface;
 use Assertis\Configuration\Drivers\AbstractLazyDriver;
+use Assertis\Configuration\Drivers\DriverInterface;
 use Exception;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintViolation;
@@ -91,12 +91,13 @@ class ConfigurationFactory
      * @return ConfigurationArray
      * @throws Exception
      */
-    public static function init(DriverInterface $provider,
-                                $key = self::DEFAULT_KEY,
-                                array $default = [],
-                                ValidatorInterface $validator = null,
-                                $constraints = null)
-    {
+    public static function init(
+        DriverInterface $provider,
+        $key = self::DEFAULT_KEY,
+        array $default = [],
+        ValidatorInterface $validator = null,
+        $constraints = null
+    ) {
         //If configuration is lazy we can't validate structure or key
         if ($provider instanceof AbstractLazyDriver) {
             return new LazyConfigurationArray($provider);
@@ -145,5 +146,4 @@ class ConfigurationFactory
             throw new Exception("Configuration $key not found in configuration object");
         }
     }
-
 }

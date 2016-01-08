@@ -78,6 +78,4 @@ class ConfigurationHelper
     {
         return $this->app['config.validator.constraints'];
     }
-
-
 }

@@ -2,7 +2,9 @@
 
 namespace Assertis\Configuration\Drivers\File;
 
-
+/**
+ * @author Maciej Romanski <maciej.romanski@assertis.co.uk>
+ */
 class PhpDriverTest extends \PHPUnit_Framework_TestCase
 {
     private $path;

@@ -42,7 +42,7 @@ class ConfigurationProvider implements ServiceProviderInterface
             }
         });
 
-        $app['config.factory'] = $app->share(function ($app){
+        $app['config.factory'] = $app->share(function ($app) {
             /** @var ConfigurationHelper $helper */
             $helper = $app['config.helper'];
 

@@ -1,3 +1,3 @@
-<?php return array(
+<?php return [
     'testKey' => 'testValue',
-);
+];

@@ -2,7 +2,7 @@
 
 namespace Assertis\Configuration\Drivers;
 
-use Assertis\Configuration\ConfigurationArray;
+use Assertis\Configuration\Collection\ConfigurationArray;
 use Exception;
 
 /**
@@ -39,6 +39,4 @@ abstract class AbstractLazyDriver implements DriverInterface
 
         return !empty($value);
     }
-
-
 }

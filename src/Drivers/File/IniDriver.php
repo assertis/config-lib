@@ -34,5 +34,4 @@ class IniDriver extends AbstractFileDriver
     {
         return parse_ini_file($file, $this->processSections);
     }
-
 }

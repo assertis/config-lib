@@ -18,10 +18,12 @@ class PhpDriver extends AbstractFileDriver
         parent::__construct($path, self::FILE_EXTENSION);
     }
 
-
+    /**
+     * @param string $file
+     * @return array
+     */
     protected function parse($file)
     {
         return include $file;
     }
-
 }

@@ -24,9 +24,13 @@ class LazyConfigurationArray extends ConfigurationArray
      */
     public function __construct(AbstractLazyDriver $provider)
     {
+        parent::__construct();
         $this->provider = $provider;
     }
 
+    /**
+     * @inheritdoc
+     */
     public function get($key)
     {
         return parent::get($key);
@@ -121,6 +125,4 @@ class LazyConfigurationArray extends ConfigurationArray
     {
         throw new Exception("Method not allowed");
     }
-
-
 }

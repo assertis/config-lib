@@ -25,5 +25,4 @@ class JsonDriver extends AbstractFileDriver
     {
         return json_decode(file_get_contents($file), true);
     }
-
 }

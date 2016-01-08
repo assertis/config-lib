@@ -19,5 +19,4 @@ abstract class AbstractClassDriver implements DriverInterface
 
         return !empty($value);
     }
-
 }
