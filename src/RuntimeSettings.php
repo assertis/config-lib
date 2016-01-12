@@ -64,12 +64,12 @@ class RuntimeSettings
      */
     public function getValue($name, $default = null)
     {
-        $header = self::getHeader($name);
+        $header = $this->getHeader($name);
         if (null !== $header) {
             return $header;
         }
 
-        $environment = self::getEnvironment($name);
+        $environment = $this->getEnvironment($name);
         if (null !== $environment) {
             return $environment;
         }
@@ -78,9 +78,8 @@ class RuntimeSettings
     }
 
     /**
-     * Return server configuration
-     *
-     * @return string|null
+     * @param string $name
+     * @return null|string
      */
     private function getEnvironment($name)
     {

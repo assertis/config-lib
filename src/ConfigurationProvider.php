@@ -61,6 +61,7 @@ class ConfigurationProvider implements ServiceProviderInterface
 
     /**
      * @return bool
+     * @deprecated Please use RuntimeSettings directly in your projects.
      */
     public static function isDev()
     {
