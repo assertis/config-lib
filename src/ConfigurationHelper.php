@@ -12,7 +12,6 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 /**
  * Class with configuration module interfaces
  *
- * @package Assertis\Configuration
  * @author Maciej Romanski <maciej.romanski@assertis.co.uk>
  */
 class ConfigurationHelper
@@ -61,6 +60,14 @@ class ConfigurationHelper
     public function getEnvironment()
     {
         return $this->app['config.environment'];
+    }
+
+    /**
+     * @return string
+     */
+    public function getTenant()
+    {
+        return $this->app['config.tenant'];
     }
 
     /**
