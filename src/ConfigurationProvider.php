@@ -22,13 +22,17 @@ class ConfigurationProvider implements ServiceProviderInterface
         $app['config.environment'] = $runtime->getEnv();
         $app['config.tenant'] = $runtime->getTenant();
 
+        if (!empty($app['config.require_tenant']) && empty($app['config.tenant'])) {
+            die('Tenant header or environment setting must be provided.');
+        }
+
         $app['config.validator'] = null;
         $app['config.validator.constraints'] = null;
 
         $app['config.helper'] = $app->share(function (Application $app) {
             return new ConfigurationHelper($app);
         });
-        
+
         $app['config.common'] = $app->share(function ($app) {
             try {
                 return ConfigurationFactory::init($app['config.driver'], ConfigurationFactory::ENV_COMMON, [], null)
