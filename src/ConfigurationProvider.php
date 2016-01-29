@@ -19,12 +19,19 @@ class ConfigurationProvider implements ServiceProviderInterface
     public function register(Application $app)
     {
         $runtime = new RuntimeSettings($_SERVER);
-        $app['config.environment'] = $runtime->getEnv();
-        $app['config.tenant'] = $runtime->getTenant();
 
-        if (!empty($app['config.require_tenant']) && empty($app['config.tenant'])) {
-            die('Tenant header or environment setting must be provided.');
-        }
+        $app['config.is_dev'] = $runtime->isDev();
+        $app['config.environment'] = $runtime->getEnv();
+        
+        $app['config.tenant'] = $app->share(function (Application $app) use ($runtime) {
+            $tenant = $runtime->getTenant();
+
+            if (true === $app['config.require_tenant'] && empty($tenant)) {
+                throw new Exception('Tenant header or environment setting must be provided.');
+            }
+
+            return $tenant;
+        });
 
         $app['config.validator'] = null;
         $app['config.validator.constraints'] = null;
