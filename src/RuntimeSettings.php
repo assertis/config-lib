@@ -18,7 +18,7 @@ class RuntimeSettings
     const ENV_DEFAULT = ConfigurationFactory::DEFAULT_KEY;
 
     const TENANT_KEY = 'TENANT';
-    const TENANT_DEFAULT = 'default';
+    const TENANT_DEFAULT = null;
 
     /**
      * @var array
