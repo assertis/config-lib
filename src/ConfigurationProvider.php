@@ -76,7 +76,7 @@ class ConfigurationProvider implements ServiceProviderInterface
      */
     public static function isDev()
     {
-        return (new RuntimeSettings($_SERVER, []))->isDev();
+        return (new RuntimeSettings($_SERVER, $_GET))->isDev();
     }
 
     /**
