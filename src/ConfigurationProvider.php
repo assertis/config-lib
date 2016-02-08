@@ -18,7 +18,7 @@ class ConfigurationProvider implements ServiceProviderInterface
      */
     public function register(Application $app)
     {
-        $runtime = new RuntimeSettings($_SERVER);
+        $runtime = new RuntimeSettings($_SERVER, $_GET);
 
         $app['config.is_dev'] = $runtime->isDev();
         $app['config.environment'] = $runtime->getEnv();
@@ -76,7 +76,7 @@ class ConfigurationProvider implements ServiceProviderInterface
      */
     public static function isDev()
     {
-        return (new RuntimeSettings($_SERVER))->isDev();
+        return (new RuntimeSettings($_SERVER, []))->isDev();
     }
 
     /**
