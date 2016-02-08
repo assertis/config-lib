@@ -16,7 +16,7 @@ class RuntimeSettingsTest extends PHPUnit_Framework_TestCase
     {
         $default = new stdClass();
 
-        $settings = new RuntimeSettings([]);
+        $settings = new RuntimeSettings([], []);
 
         $this->assertSame($default, $settings->getValue('foo', $default));
         $this->assertSame(null, $settings->getValue('Foo'));
@@ -26,9 +26,7 @@ class RuntimeSettingsTest extends PHPUnit_Framework_TestCase
     {
         $value = new stdClass();
 
-        $settings = new RuntimeSettings([
-            'HTTP_X_FOO' => $value,
-        ]);
+        $settings = new RuntimeSettings(['HTTP_X_FOO' => $value], []);
 
         $this->assertSame($value, $settings->getValue('foo'));
         $this->assertSame($value, $settings->getValue('Foo'));
@@ -39,22 +37,65 @@ class RuntimeSettingsTest extends PHPUnit_Framework_TestCase
     {
         $value = new stdClass();
 
-        $settings = new RuntimeSettings([
-            'Foo' => $value,
-        ]);
+        $settings = new RuntimeSettings(['Foo' => $value], []);
 
         $this->assertSame(null, $settings->getValue('foo'));
         $this->assertSame($value, $settings->getValue('Foo'));
         $this->assertSame(null, $settings->getValue('FOO'));
     }
 
-    public function testHeaderHasPrecedence()
+    public function testGetFromUrl()
     {
-        $settings = new RuntimeSettings([
-            'HTTP_X_FOO' => 'header',
-            'Foo'        => 'environment',
-        ]);
+        $value = new stdClass();
 
-        $this->assertSame('header', $settings->getValue('Foo'));
+        $settings = new RuntimeSettings([], ['foo' => $value]);
+
+        $this->assertSame($value, $settings->getValue('foo'));
+        $this->assertSame($value, $settings->getValue('Foo'));
+        $this->assertSame($value, $settings->getValue('FOO'));
+    }
+
+    /**
+     * @return array
+     */
+    public function provideHeaderHasPrecedence()
+    {
+        return [
+            [
+                ['HTTP_X_FOO' => 'header'],
+                ['foo' => 'get'],
+                'get',
+            ],
+            [
+                ['HTTP_X_FOO' => 'header', 'Foo' => 'environment',],
+                [],
+                'header',
+            ],
+            [
+                ['Foo' => 'environment',],
+                ['foo' => 'get'],
+                'get',
+            ],
+            [
+                ['HTTP_X_FOO' => 'header', 'Foo' => 'environment',],
+                ['foo' => 'get'],
+                'get',
+            ],
+            [
+                ['Foo' => 'environment',],
+                [],
+                'environment',
+            ],
+        ];
+    }
+
+    /**
+     * @dataProvider provideHeaderHasPrecedence
+     */
+    public function testHeaderHasPrecedence($server, $get, $expected)
+    {
+        $settings = new RuntimeSettings($server, $get);
+
+        $this->assertSame($expected, $settings->getValue('Foo'));
     }
 }

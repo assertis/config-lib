@@ -5,10 +5,11 @@ namespace Assertis\Configuration;
 use Silex\Application;
 
 /**
- * Turns out everything is in the $_SERVER variable.
+ * Turns out most things are located in the $_SERVER variable.
  *  - HTTP headers are at 'HTTP_'.str_replace('-', '_', strtoupper($key))
  *  - Command line (`FOO=bar php test.php`) environment settings are as defined.
  *  - Apache SetEnv settings are as defined.
+ * URL parameters are in the $_GET, as usual.
  *
  * @author Michał Tatarynowicz <michal.tatarynowicz@assertis.co.uk>
  */
@@ -19,18 +20,24 @@ class RuntimeSettings
 
     const TENANT_KEY = 'TENANT';
     const TENANT_DEFAULT = null;
-
+    
     /**
      * @var array
      */
     private $serverVariables;
+    /**
+     * @var array
+     */
+    private $urlParams;
 
     /**
      * @param array $serverVariables
+     * @param array $urlParams
      */
-    public function __construct(array $serverVariables)
+    public function __construct(array $serverVariables, array $urlParams)
     {
         $this->serverVariables = $serverVariables;
+        $this->urlParams = $urlParams;
     }
 
     /**
@@ -64,6 +71,11 @@ class RuntimeSettings
      */
     public function getValue($name, $default = null)
     {
+        $url = $this->getUrlParam($name);
+        if (null !== $url) {
+            return $url;
+        }
+
         $header = $this->getHeader($name);
         if (null !== $header) {
             return $header;
@@ -79,7 +91,18 @@ class RuntimeSettings
 
     /**
      * @param string $name
-     * @return null|string
+     * @return string|null
+     */
+    private function getUrlParam($name)
+    {
+        $key = strtolower($name);
+        
+        return array_key_exists($key, $this->urlParams) ? $this->urlParams[$key] : null;
+    }
+    
+    /**
+     * @param string $name
+     * @return string|null
      */
     private function getEnvironment($name)
     {
