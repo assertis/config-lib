@@ -8,7 +8,7 @@ namespace Assertis\Configuration\Drivers\File;
  */
 class PhpDriver extends AbstractFileDriver
 {
-    const FILE_EXTENSION = 'json';
+    const FILE_EXTENSION = 'php';
 
     /**
      * @param string $path

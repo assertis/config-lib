@@ -18,6 +18,8 @@ class PhpDriverTest extends \PHPUnit_Framework_TestCase
     {
         $provider = new PhpDriver($this->path);
         $settings = $provider->getSettings('test');
-        $this->assertNotEmpty($settings);
+        
+        $this->assertInternalType('array', $settings);
+        $this->assertSame('php', $settings['testKey']);
     }
 }

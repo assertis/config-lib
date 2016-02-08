@@ -2,7 +2,9 @@
 
 namespace Assertis\Configuration\Drivers\File;
 
-
+/**
+ * @author Maciej Romanski <maciej.romanski@assertis.co.uk>
+ */
 class IniDriverTest extends \PHPUnit_Framework_TestCase
 {
     private $path;
@@ -14,6 +16,8 @@ class IniDriverTest extends \PHPUnit_Framework_TestCase
     public function testLoadingFile(){
         $provider = new IniDriver($this->path);
         $settings = $provider->getSettings('test');
-        $this->assertNotEmpty($settings);
+
+        $this->assertInternalType('array', $settings);
+        $this->assertSame('ini', $settings['testKey']);
     }
 }
