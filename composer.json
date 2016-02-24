@@ -14,11 +14,6 @@
       "Assertis\\Configuration\\": "src"
     }
   },
-  "extra": {
-    "branch-alias": {
-      "dev-master": "1.0.x-dev"
-    }
-  },
   "require": {
     "php": "^5.6",
     "silex/silex": "^1.3",
