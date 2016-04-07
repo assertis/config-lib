@@ -113,7 +113,7 @@ class ConfigurationFactory
         if (!empty($validator) && !empty($constraints) && ($key === self::DEFAULT_KEY || $key === self::ENV_TEST)) {
             $violations = $validator->validate($settings, $constraints);
 
-            if (!empty($violations)) {
+            if ($violations->count()) {
                 $error = "Validation errors:";
 
                 /** @var ConstraintViolation $violation */

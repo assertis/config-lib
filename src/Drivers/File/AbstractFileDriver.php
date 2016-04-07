@@ -69,7 +69,7 @@ abstract class AbstractFileDriver implements DriverInterface
     {
         //Add directory separator if not exists in path
         if (substr($this->path, -1) !== DIRECTORY_SEPARATOR && substr($name, 1) !== DIRECTORY_SEPARATOR) {
-            $this->path = DIRECTORY_SEPARATOR . $this->path;
+            $this->path = $this->path . DIRECTORY_SEPARATOR;
         }
 
         return $this->path . $name . '.' . $this->fileExtension;
