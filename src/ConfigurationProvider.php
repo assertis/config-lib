@@ -33,8 +33,13 @@ class ConfigurationProvider implements ServiceProviderInterface
             return $tenant;
         });
 
-        $app['config.validator'] = null;
-        $app['config.validator.constraints'] = null;
+        if (!isset($app['config.validator.constraints'])) {
+            $app['config.validator.constraints'] = null;
+        }
+
+        if (!isset($app['config.validator'])) {
+            $app['config.validator'] = null;
+        }
 
         $app['config.helper'] = $app->share(function (Application $app) {
             return new ConfigurationHelper($app);
@@ -65,7 +70,7 @@ class ConfigurationProvider implements ServiceProviderInterface
 
             /** @var ConfigurationFactory $factory */
             $factory = $app['config.factory'];
-
+            
             return $factory->load($helper->getEnvironment(), $helper->getCommon(), $helper->getValidationConstraints());
         });
     }
