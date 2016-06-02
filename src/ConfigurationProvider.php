@@ -21,17 +21,22 @@ class ConfigurationProvider implements ServiceProviderInterface
         $runtime = new RuntimeSettings($_SERVER, $_GET);
 
         $app['config.is_dev'] = $runtime->isDev();
-        $app['config.environment'] = $runtime->getEnv();
-        
-        $app['config.tenant'] = $app->share(function (Application $app) use ($runtime) {
-            $tenant = $runtime->getTenant();
 
-            if (true === $app['config.require_tenant'] && empty($tenant)) {
-                throw new Exception('Tenant header or environment setting must be provided.');
-            }
+        if (!isset($app['config.environment'])) {
+            $app['config.environment'] = $runtime->getEnv();
+        }
 
-            return $tenant;
-        });
+        if (!isset($app['config.tenant'])) {
+            $app['config.tenant'] = $app->share(function (Application $app) use ($runtime) {
+                $tenant = $runtime->getTenant();
+
+                if (true === $app['config.require_tenant'] && empty($tenant)) {
+                    throw new Exception('Tenant header or environment setting must be provided.');
+                }
+
+                return $tenant;
+            });
+        }
 
         if (!isset($app['config.validator.constraints'])) {
             $app['config.validator.constraints'] = null;
@@ -70,7 +75,7 @@ class ConfigurationProvider implements ServiceProviderInterface
 
             /** @var ConfigurationFactory $factory */
             $factory = $app['config.factory'];
-            
+
             return $factory->load($helper->getEnvironment(), $helper->getCommon(), $helper->getValidationConstraints());
         });
     }

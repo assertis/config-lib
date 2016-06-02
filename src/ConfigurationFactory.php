@@ -41,6 +41,7 @@ class ConfigurationFactory
     const DEFAULT_KEY = self::ENV_DEV;
 
     const ENV_DEV = 'dev';
+    const ENV_INTEGRATION = 'integration';
     const ENV_TEST = 'test';
     const ENV_UAT_SLEEPER = 'uat-sleeper';
     const ENV_PROD = 'prod';

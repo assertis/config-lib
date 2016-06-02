@@ -20,7 +20,7 @@ class RuntimeSettings
 
     const TENANT_KEY = 'TENANT';
     const TENANT_DEFAULT = null;
-    
+
     /**
      * @var array
      */
@@ -61,7 +61,7 @@ class RuntimeSettings
      */
     public function isDev()
     {
-        return self::ENV_DEFAULT === self::getEnv();
+        return in_array(self::getEnv(), [ConfigurationFactory::ENV_DEV, ConfigurationFactory::ENV_INTEGRATION]);
     }
 
     /**
@@ -96,10 +96,10 @@ class RuntimeSettings
     private function getUrlParam($name)
     {
         $key = strtolower($name);
-        
+
         return array_key_exists($key, $this->urlParams) ? $this->urlParams[$key] : null;
     }
-    
+
     /**
      * @param string $name
      * @return string|null
