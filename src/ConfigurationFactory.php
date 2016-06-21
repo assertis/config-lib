@@ -63,19 +63,19 @@ class ConfigurationFactory
      *
      * @param string $key Main key of configuration
      * @param array $default
-     * @param bool $cache
+     * @param bool $isCached
      * @param Constraint|Constraint[]|null $constraints
      * @return ConfigurationArray
      */
-    public function load($key = self::DEFAULT_KEY, array $default = [], $constraints = null, $cache = true)
+    public function load($key = self::DEFAULT_KEY, array $default = [], $constraints = null, $isCached = true)
     {
-        if ($cache && isset($this->cache[$key])) {
+        if ($isCached && isset($this->cache[$key])) {
             return $this->cache[$key];
         }
 
         $configuration = self::init($this->provider, $key, $default, $this->validator, $constraints);
 
-        if ($cache) {
+        if ($isCached) {
             $this->cache[$key] = $configuration;
         }
 
