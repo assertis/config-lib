@@ -70,7 +70,7 @@ class ConfigurationFactory
     public function load($key = self::DEFAULT_KEY, array $default = [], $constraints = null, $cache = true)
     {
         if ($cache && isset($this->cache[$key])) {
-            return $cache[$key];
+            return $this->cache[$key];
         }
 
         $configuration = self::init($this->provider, $key, $default, $this->validator, $constraints);
