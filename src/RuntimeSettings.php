@@ -2,8 +2,6 @@
 
 namespace Assertis\Configuration;
 
-use Silex\Application;
-
 /**
  * Turns out most things are located in the $_SERVER variable.
  *  - HTTP headers are at 'HTTP_'.str_replace('-', '_', strtoupper($key))

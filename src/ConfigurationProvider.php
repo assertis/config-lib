@@ -3,8 +3,8 @@
 namespace Assertis\Configuration;
 
 use Exception;
-use Silex\Application;
-use Silex\ServiceProviderInterface;
+use Pimple\Container;
+use Pimple\ServiceProviderInterface;
 
 /**
  * Silex provider for configuration module
@@ -14,9 +14,9 @@ use Silex\ServiceProviderInterface;
 class ConfigurationProvider implements ServiceProviderInterface
 {
     /**
-     * @param Application $app
+     * @param Container $app
      */
-    public function register(Application $app)
+    public function register(Container $app)
     {
         $runtime = new RuntimeSettings($_SERVER, $_GET);
 
@@ -27,7 +27,7 @@ class ConfigurationProvider implements ServiceProviderInterface
         }
 
         if (!isset($app['config.tenant'])) {
-            $app['config.tenant'] = $app->share(function (Application $app) use ($runtime) {
+            $app['config.tenant'] = function (Container $app) use ($runtime) {
                 $tenant = $runtime->getTenant();
 
                 if (true === $app['config.require_tenant'] && empty($tenant)) {
@@ -35,7 +35,7 @@ class ConfigurationProvider implements ServiceProviderInterface
                 }
 
                 return $tenant;
-            });
+            };
         }
 
         if (!isset($app['config.validator.constraints'])) {
@@ -46,11 +46,11 @@ class ConfigurationProvider implements ServiceProviderInterface
             $app['config.validator'] = null;
         }
 
-        $app['config.helper'] = $app->share(function (Application $app) {
+        $app['config.helper'] = function (Container $app) {
             return new ConfigurationHelper($app);
-        });
+        };
 
-        $app['config.common'] = $app->share(function ($app) {
+        $app['config.common'] = function ($app) {
             try {
                 return ConfigurationFactory::init($app['config.driver'], ConfigurationFactory::ENV_COMMON, [], null)
                     ->getSettings();
@@ -60,16 +60,16 @@ class ConfigurationProvider implements ServiceProviderInterface
             } finally {
                 return [];
             }
-        });
+        };
 
-        $app['config.factory'] = $app->share(function ($app) {
+        $app['config.factory'] = function ($app) {
             /** @var ConfigurationHelper $helper */
             $helper = $app['config.helper'];
 
             return new ConfigurationFactory($helper->getDriver(), $helper->getValidator());
-        });
+        };
 
-        $app['config'] = $app->share(function ($app) {
+        $app['config'] = function ($app) {
             /** @var ConfigurationHelper $helper */
             $helper = $app['config.helper'];
 
@@ -77,22 +77,6 @@ class ConfigurationProvider implements ServiceProviderInterface
             $factory = $app['config.factory'];
 
             return $factory->load($helper->getEnvironment(), $helper->getCommon(), $helper->getValidationConstraints());
-        });
-    }
-
-    /**
-     * @return bool
-     * @deprecated Please use RuntimeSettings directly in your projects.
-     */
-    public static function isDev()
-    {
-        return (new RuntimeSettings($_SERVER, $_GET))->isDev();
-    }
-
-    /**
-     * @param Application $app
-     */
-    public function boot(Application $app)
-    {
+        };
     }
 }

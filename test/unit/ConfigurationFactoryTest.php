@@ -4,9 +4,12 @@ namespace Assertis\Configuration;
 
 use Assertis\Configuration\Collection\ConfigurationArray;
 use Assertis\Configuration\Drivers\SourceDriver;
-use Silex\Application;
-use Silex\Provider\ValidatorServiceProvider;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\ConstraintValidatorFactory;
+use Symfony\Component\Validator\Mapping\Factory\LazyLoadingMetadataFactory;
+use Symfony\Component\Validator\Mapping\Loader\StaticMethodLoader;
+use Symfony\Component\Validator\Validation;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
  * @author Maciej Romanski <maciej.romanski@assertis.co.uk>
@@ -14,14 +17,19 @@ use Symfony\Component\Validator\Constraints as Assert;
 class ConfigurationFactoryTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var Application
+     * @return ValidatorInterface
      */
-    private $app;
-
-    public function setUp()
+    private function getValidator()
     {
-        $this->app = new Application();
-        $this->app->register(new ValidatorServiceProvider());
+        $classMetadataFactory = new LazyLoadingMetadataFactory(new StaticMethodLoader());
+        $validatorFactory = new ConstraintValidatorFactory();
+
+        $builder = Validation::createValidatorBuilder();
+        $builder->setConstraintValidatorFactory($validatorFactory);
+        $builder->setTranslationDomain('validators');
+        $builder->setMetadataFactory($classMetadataFactory);
+
+        return $builder->getValidator();
     }
 
     public function testInit()
@@ -43,7 +51,7 @@ class ConfigurationFactoryTest extends \PHPUnit_Framework_TestCase
     {
         $factory = new ConfigurationFactory(
             new SourceDriver(['dev' => ['something' => 'asd']]),
-            $this->app['validator']
+            $this->getValidator()
         );
 
         $constraints = [

@@ -2,31 +2,35 @@
 
 namespace Assertis\Configuration;
 
-
 use Assertis\Configuration\Collection\ConfigurationArray;
 use Assertis\Configuration\Drivers\File\IniDriver;
-use Silex\Application;
+use PHPUnit_Framework_TestCase;
+use Pimple\Container;
 
-class ConfigurationHelperTest extends \PHPUnit_Framework_TestCase
+/**
+ * @author Maciej Romanski <maciej.romanski@assertis.co.uk>
+ */
+class ConfigurationHelperTest extends PHPUnit_Framework_TestCase
 {
     /**
-     * @var Application
+     * @var Container
      */
-    private $app;
+    private $container;
 
     public function setUp()
     {
         $_SERVER['ENV'] = 'test';
         $path = ROOT . '/test/resources/';
-        $this->app = new Application();
-        $this->app['config.driver'] = new IniDriver($path);
         $provider = new ConfigurationProvider();
-        $this->app->register($provider);
+        
+        $this->container = new Container();
+        $this->container['config.driver'] = new IniDriver($path);
+        $this->container->register($provider);
     }
 
     public function testGetters()
     {
-        $helper = new ConfigurationHelper($this->app);
+        $helper = new ConfigurationHelper($this->container);
 
         $this->assertInstanceOf(ConfigurationArray::class, $helper->getConfig());
         $this->assertEmpty($helper->getCommon());
