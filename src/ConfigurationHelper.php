@@ -5,7 +5,7 @@ namespace Assertis\Configuration;
 use Assertis\Configuration\Collection\ConfigurationArray;
 use Assertis\Configuration\Collection\LazyConfigurationArray;
 use Assertis\Configuration\Drivers\DriverInterface;
-use Silex\Application;
+use Pimple\Container;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -17,15 +17,15 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class ConfigurationHelper
 {
     /**
-     * @var Application
+     * @var Container
      */
     private $app;
 
     /**
      * ConfigurationHelper constructor.
-     * @param Application $app
+     * @param Container $app
      */
-    public function __construct(Application $app)
+    public function __construct(Container $app)
     {
         $this->app = $app;
     }
