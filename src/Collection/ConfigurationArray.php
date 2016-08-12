@@ -46,7 +46,7 @@ class ConfigurationArray implements IteratorAggregate, ArrayAccess, Countable
      * Alias method for offset get
      *
      * @param mixed $key Value key
-     * @return mixed
+     * @return self|mixed
      */
     public function get($key)
     {

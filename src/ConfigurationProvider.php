@@ -28,7 +28,12 @@ class ConfigurationProvider implements ServiceProviderInterface
 
         if (!isset($app['config.tenant'])) {
             $app['config.tenant'] = function (Container $app) use ($runtime) {
+                
                 $tenant = $runtime->getTenant();
+                
+                if (empty($tenant)) {
+                    $tenant = $app['config']->get('tenant');
+                }
 
                 if (true === $app['config.require_tenant'] && empty($tenant)) {
                     throw new Exception('Tenant header or environment setting must be provided.');
