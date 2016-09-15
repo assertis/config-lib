@@ -60,9 +60,7 @@ class ConfigurationProvider implements ServiceProviderInterface
                 return ConfigurationFactory::init($app['config.driver'], ConfigurationFactory::ENV_COMMON, [], null)
                     ->getSettings();
             } catch (Exception $e) {
-                unset($e);
-                //It will return exception if common file not exists. We don't bother of that : ).
-            } finally {
+                // This means that the common file doesn't exist. Not a problem.
                 return [];
             }
         };
@@ -80,7 +78,7 @@ class ConfigurationProvider implements ServiceProviderInterface
 
             /** @var ConfigurationFactory $factory */
             $factory = $app['config.factory'];
-
+            
             return $factory->load($helper->getEnvironment(), $helper->getCommon(), $helper->getValidationConstraints());
         };
     }
