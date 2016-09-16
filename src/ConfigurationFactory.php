@@ -72,7 +72,7 @@ class ConfigurationFactory
         if ($isCached && isset($this->cache[$key])) {
             return $this->cache[$key];
         }
-
+        
         $configuration = self::init($this->provider, $key, $default, $this->validator, $constraints);
 
         if ($isCached) {
@@ -113,7 +113,7 @@ class ConfigurationFactory
 
         //Validate settings structure if we have validation and key is default or test
         if (!empty($validator) && !empty($constraints) && ($key === self::DEFAULT_KEY || $key === self::ENV_TEST)) {
-            $violations = $validator->validate($settings, $constraints);
+            $violations = $validator->validate(array_merge($settings, $default), $constraints);
 
             if ($violations->count()) {
                 $error = "Validation errors:";
@@ -132,7 +132,7 @@ class ConfigurationFactory
                 throw new Exception("Configuration $key has bad structure. $error");
             }
         }
-
+        
         return new ConfigurationArray(array_merge($settings, $default));
     }
 
