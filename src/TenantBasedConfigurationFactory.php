@@ -8,13 +8,41 @@ use Assertis\Configuration\Drivers\DriverInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
- * Class for creating configurations object
+ * This extension allows for additional distinction between configuration values for different tenants within
+ * the same environment. It also allows for having a common set of values for all tenants within the environment.
  *
- * @package Assertis\Configuration
- * @author Maciej Romanski <maciej.romanski@assertis.co.uk>
+ * This:
+ *
+ * {
+ *   "@all" {
+ *     "foo": {
+ *       "bar": "Baz"
+ *     }
+ *   },
+ *   "Tenant": {
+ *     "foo": {
+ *       "boo": "Bing"
+ *     },
+ *     "fab": 42
+ *   }
+ * }
+ *
+ * For tenant "Tenant" results in:
+ *
+ * {
+ *   "foo": {
+ *     "bar": "Baz",
+ *     "boo": "Bing",
+ *   },
+ *   "fab": 42
+ * }
+ *
+ * @author Michał Tatarynowicz <michal.tatarynowicz@assertis.co.uk>
  */
 class TenantBasedConfigurationFactory extends ConfigurationFactory
 {
+    const ALL_TENANT_KEY = '@all';
+
     /**
      * @var string
      */
@@ -48,7 +76,7 @@ class TenantBasedConfigurationFactory extends ConfigurationFactory
         $config = parent::doLoad($provider, $key, $default);
 
         /** @var ConfigurationArray $all */
-        $all = $config->get('@all');
+        $all = $config->get(self::ALL_TENANT_KEY);
         /** @var ConfigurationArray $tenantSpecific */
         $tenantSpecific = $config->get($this->tenant);
 
