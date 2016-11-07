@@ -81,8 +81,8 @@ class TenantBasedConfigurationFactory extends ConfigurationFactory
         $tenantSpecific = $config->get($this->tenant);
 
         return new ConfigurationArray(array_merge_recursive(
-            $all->getAll()->getArrayCopy(),
-            $tenantSpecific->getAll()->getArrayCopy()
+            $all->getSettings(),
+            $tenantSpecific->getSettings()
         ));
     }
 }
