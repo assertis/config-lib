@@ -3,6 +3,7 @@
 namespace Assertis\Configuration\Drivers;
 
 use Assertis\Configuration\Collection\ConfigurationArray;
+use Assertis\Configuration\ConfigurationException;
 use Exception;
 
 /**
@@ -27,7 +28,7 @@ abstract class AbstractLazyDriver implements DriverInterface
      */
     public function getSettings($key)
     {
-        throw new Exception("Lazy provider can't return all settings.");
+        throw new ConfigurationException("Lazy provider can't return all settings.");
     }
 
     /**

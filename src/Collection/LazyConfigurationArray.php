@@ -2,8 +2,8 @@
 
 namespace Assertis\Configuration\Collection;
 
+use Assertis\Configuration\ConfigurationException;
 use Assertis\Configuration\Drivers\AbstractLazyDriver;
-use Exception;
 
 /**
  * Configuration array for lazy configs
@@ -38,52 +38,51 @@ class LazyConfigurationArray extends ConfigurationArray
 
     /**
      * @inheritdoc
-     * @throws Exception
+     * @throws ConfigurationException
      */
     public function set($key, $value)
     {
-        throw new Exception("Method not allowed");
+        throw new ConfigurationException("Method not allowed");
     }
 
     /**
      * @inheritdoc
-     * @throws Exception
+     * @throws ConfigurationException
      */
     public function getAll()
     {
-        throw new Exception("Method not allowed");
+        throw new ConfigurationException("Method not allowed");
     }
 
     /**
      * @inheritdoc
-     * @throws Exception
+     * @throws ConfigurationException
      */
     public function setAll(array $settings)
     {
-        throw new Exception("Method not allowed");
+        throw new ConfigurationException("Method not allowed");
     }
 
     /**
      * @inheritdoc
-     * @throws Exception
+     * @throws ConfigurationException
      */
     public function getIterator()
     {
-        throw new Exception("Method not allowed");
+        throw new ConfigurationException("Method not allowed");
     }
 
     /**
      * @inheritdoc
-     * @throws Exception
+     * @throws ConfigurationException
      */
     public function offsetExists($offset)
     {
-        throw new Exception("Method not allowed");
+        throw new ConfigurationException("Method not allowed");
     }
 
     /**
      * @inheritdoc
-     * @throws Exception
      */
     public function offsetGet($offset)
     {
@@ -92,37 +91,37 @@ class LazyConfigurationArray extends ConfigurationArray
 
     /**
      * @inheritdoc
-     * @throws Exception
+     * @throws ConfigurationException
      */
     public function offsetSet($offset, $value)
     {
-        throw new Exception("Method not allowed");
+        throw new ConfigurationException("Method not allowed");
     }
 
     /**
      * @inheritdoc
-     * @throws Exception
+     * @throws ConfigurationException
      */
     public function offsetUnset($offset)
     {
-        throw new Exception("Method not allowed");
+        throw new ConfigurationException("Method not allowed");
     }
 
     /**
      * @inheritdoc
-     * @throws Exception
+     * @throws ConfigurationException
      */
     public function count()
     {
-        throw new Exception("Method not allowed");
+        throw new ConfigurationException("Method not allowed");
     }
 
     /**
      * @inheritdoc
-     * @throws Exception
+     * @throws ConfigurationException
      */
     public function getSettings()
     {
-        throw new Exception("Method not allowed");
+        throw new ConfigurationException("Method not allowed");
     }
 }

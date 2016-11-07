@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace Assertis\Configuration;
 
@@ -72,8 +73,12 @@ class ConfigurationFactory
         if ($isCached && isset($this->cache[$key])) {
             return $this->cache[$key];
         }
-        
-        $configuration = self::init($this->provider, $key, $default, $this->validator, $constraints);
+
+        $configuration = $this->doLoad($this->provider, $key, $default);
+
+        if ($this->validator && $constraints && in_array($key, [self::ENV_DEV, self::ENV_TEST])) {
+            self::assertMatchesSchema($configuration, $key, $this->validator, $constraints);
+        }
 
         if ($isCached) {
             $this->cache[$key] = $configuration;
@@ -83,69 +88,101 @@ class ConfigurationFactory
     }
 
     /**
-     * Init configuration and return configuration object
+     * @param DriverInterface $provider
+     * @param string $key
+     * @param array $default
+     * @return ConfigurationArray|LazyConfigurationArray
+     */
+    protected function doLoad(
+        DriverInterface $provider,
+        string $key = self::DEFAULT_KEY,
+        array $default = []
+    ): ConfigurationArray {
+        return self::init($provider, $key, $default);
+    }
+
+    /**
+     * Load configuration
      *
      * @param DriverInterface $provider
      * @param $key
      * @param array $default
-     * @param ValidatorInterface|null $validator
-     * @param Constraint|Constraint[]|null $constraints
      * @return ConfigurationArray
      * @throws Exception
      */
     public static function init(
         DriverInterface $provider,
-        $key = self::DEFAULT_KEY,
-        array $default = [],
-        ValidatorInterface $validator = null,
-        $constraints = null
+        string $key = self::DEFAULT_KEY,
+        array $default = []
     ) {
         //If configuration is lazy we can't validate structure or key
         if ($provider instanceof AbstractLazyDriver) {
             return new LazyConfigurationArray($provider);
         }
 
-        //Validate of configuration have key
-        self::validateConfiguration($provider, $key);
+        self::assertConfigurationExists($provider, $key);
 
-        //Load configuration
         $settings = $provider->getSettings($key);
 
-        //Validate settings structure if we have validation and key is default or test
-        if (!empty($validator) && !empty($constraints) && ($key === self::DEFAULT_KEY || $key === self::ENV_TEST)) {
-            $violations = $validator->validate(array_merge($settings, $default), $constraints);
+        return new ConfigurationArray(array_merge_recursive($settings, $default));
+    }
 
-            if ($violations->count()) {
-                $error = "Validation errors:";
+    /**
+     * Validate configuration
+     * @param ConfigurationArray $configuration
+     * @param string $key
+     * @param ValidatorInterface $validator
+     * @param array $constraints
+     * @throws ConfigurationNotFoundException
+     */
+    public static function assertMatchesSchema(
+        ConfigurationArray $configuration,
+        string $key,
+        ValidatorInterface $validator,
+        array $constraints
+    ) {
+        $violations = $validator->validate($configuration->getAll()->getArrayCopy(), $constraints);
 
-                /** @var ConstraintViolation $violation */
-                foreach ($violations as $violation) {
-                    $error .= "\n";
-
-                    if (!empty($violation->getPropertyPath())) {
-                        $error .= "[" . $violation->getPropertyPath() . "]";
-                    }
-
-                    $error .= $violation->getMessage();
-                }
-
-                throw new Exception("Configuration $key has bad structure. $error");
-            }
+        if (!$violations->count()) {
+            return;
         }
-        
-        return new ConfigurationArray(array_merge($settings, $default));
+
+        $error = "Validation errors:";
+
+        /** @var ConstraintViolation $violation */
+        foreach ($violations as $violation) {
+            $error .= "\n";
+
+            if (!empty($violation->getPropertyPath())) {
+                $error .= "[" . $violation->getPropertyPath() . "]";
+            }
+
+            $error .= $violation->getMessage();
+        }
+
+        throw new ConfigurationNotValidException(sprintf(
+            'Configuration %s has bad structure: %s',
+            $key,
+            $error
+        ));
     }
 
     /**
      * Validate configuration array if we have key etc.
+     *
      * @param DriverInterface $provider
      * @param string $key key for configuration
-     * @throws Exception
+     * @throws ConfigurationNotFoundException
      */
-    private static function validateConfiguration(DriverInterface $provider, $key)
+    private static function assertConfigurationExists(DriverInterface $provider, $key)
     {
-        if (!$provider->keyExists($key)) {
-            throw new Exception("Configuration $key not found in configuration object");
+        if ($provider->keyExists($key)) {
+            return;
         }
+
+        throw new ConfigurationNotFoundException(sprintf(
+            'Configuration %s not found in configuration object',
+            $key
+        ));
     }
 }

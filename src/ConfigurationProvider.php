@@ -26,17 +26,25 @@ class ConfigurationProvider implements ServiceProviderInterface
             $app['config.environment'] = $runtime->getEnv();
         }
 
+        if (!isset($app['config.require_tenant'])) {
+            $app['config.require_tenant'] = false;
+        }
+
+        if (!empty($app['config.tenant_based'])) {
+            $app['config.require_tenant'] = true;
+        }
+
         if (!isset($app['config.tenant'])) {
             $app['config.tenant'] = function (Container $app) use ($runtime) {
-                
+
                 $tenant = $runtime->getTenant();
-                
+
                 if (empty($tenant)) {
                     $tenant = $app['config']->get('tenant');
                 }
 
                 if (true === $app['config.require_tenant'] && empty($tenant)) {
-                    throw new Exception('Tenant header or environment setting must be provided.');
+                    throw new ConfigurationException('Tenant header or environment setting must be provided.');
                 }
 
                 return $tenant;
@@ -57,7 +65,7 @@ class ConfigurationProvider implements ServiceProviderInterface
 
         $app['config.common'] = function ($app) {
             try {
-                return ConfigurationFactory::init($app['config.driver'], ConfigurationFactory::ENV_COMMON, [], null)
+                return ConfigurationFactory::init($app['config.driver'], ConfigurationFactory::ENV_COMMON, [])
                     ->getSettings();
             } catch (Exception $e) {
                 // This means that the common file doesn't exist. Not a problem.
@@ -69,17 +77,35 @@ class ConfigurationProvider implements ServiceProviderInterface
             /** @var ConfigurationHelper $helper */
             $helper = $app['config.helper'];
 
-            return new ConfigurationFactory($helper->getDriver(), $helper->getValidator());
+            return new ConfigurationFactory(
+                $helper->getDriver(),
+                $helper->getValidator()
+            );
         };
 
-        $app['config'] = function ($app) {
+        $app['config.factory.tenant'] = function (Container $app) {
+            /** @var ConfigurationHelper $helper */
+            $helper = $app['config.helper'];
+
+            return new TenantBasedConfigurationFactory(
+                $helper->getDriver(),
+                $helper->getValidator(),
+                $app['config.tenant']
+            );
+        };
+
+        $app['config'] = function (Container $app) {
             /** @var ConfigurationHelper $helper */
             $helper = $app['config.helper'];
 
             /** @var ConfigurationFactory $factory */
-            $factory = $app['config.factory'];
-            
-            return $factory->load($helper->getEnvironment(), $helper->getCommon(), $helper->getValidationConstraints());
+            $factory = empty($app['config.tenant_based']) ? $app['config.factory'] : $app['config.factory.tenant'];
+
+            return $factory->load(
+                $helper->getEnvironment(),
+                $helper->getCommon(),
+                $helper->getValidationConstraints()
+            );
         };
     }
 }
