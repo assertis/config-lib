@@ -1,4 +1,5 @@
 <?php
+declare(strict_types = 1);
 
 namespace Assertis\Configuration;
 
@@ -67,6 +68,7 @@ class TenantBasedConfigurationFactory extends ConfigurationFactory
      * @param string $key
      * @param array $default
      * @return ConfigurationArray|LazyConfigurationArray
+     * @throws ConfigurationNotFoundException
      */
     protected function doLoad(
         DriverInterface $provider,
@@ -77,6 +79,15 @@ class TenantBasedConfigurationFactory extends ConfigurationFactory
 
         /** @var ConfigurationArray $all */
         $all = $config->get(self::ALL_TENANT_KEY);
+
+        if (!$config->offsetExists($this->tenant)) {
+            throw new ConfigurationNotFoundException(sprintf(
+                'Configuration for tenant %s does not exist in environment %s',
+                $this->tenant,
+                $key
+            ));
+        }
+
         /** @var ConfigurationArray $tenantSpecific */
         $tenantSpecific = $config->get($this->tenant);
 

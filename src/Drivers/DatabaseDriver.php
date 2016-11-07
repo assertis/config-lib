@@ -2,11 +2,11 @@
 
 namespace Assertis\Configuration\Drivers;
 
-use Exception;
+use Assertis\Configuration\ConfigurationException;
+use Assertis\Configuration\ConfigurationValueNotFoundException;
 use PDO;
 use PDOStatement;
 use Psr\Log\LoggerInterface;
-use UnexpectedValueException;
 
 /**
  * Provide lazy configuration from database
@@ -56,7 +56,7 @@ class DatabaseDriver extends AbstractLazyDriver
             $query = $this->executeQuery(sprintf(self::SQL_GET_BY_KEY, $this->tableName), compact('key'));
 
             if ($query->rowCount() < 1) {
-                throw new UnexpectedValueException("Configuration record for key {$key} was not found.");
+                throw new ConfigurationValueNotFoundException("Configuration record for key {$key} was not found.");
             }
 
             $cache[$key] = $query->fetchColumn(0);
@@ -69,7 +69,7 @@ class DatabaseDriver extends AbstractLazyDriver
      * @param string $sql
      * @param array $params
      * @return PDOStatement
-     * @throws Exception
+     * @throws ConfigurationException
      */
     private function executeQuery($sql, $params)
     {
@@ -80,7 +80,7 @@ class DatabaseDriver extends AbstractLazyDriver
             $error = "{$errorInfo['0']}/{$errorInfo['1']} - {$errorInfo[2]}";
             $json = json_encode($params);
             $this->logger->error("Could not execute query {$sql} with parameters {$json}: {$error}");
-            throw new Exception("Could not execute SQL query.", 500);
+            throw new ConfigurationException("Could not execute SQL query.", 500);
         }
 
         return $query;

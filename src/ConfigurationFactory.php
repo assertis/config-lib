@@ -133,7 +133,7 @@ class ConfigurationFactory
      * @param string $key
      * @param ValidatorInterface $validator
      * @param array $constraints
-     * @throws Exception
+     * @throws ConfigurationNotFoundException
      */
     public static function assertMatchesSchema(
         ConfigurationArray $configuration,
@@ -160,7 +160,11 @@ class ConfigurationFactory
             $error .= $violation->getMessage();
         }
 
-        throw new Exception("Configuration $key has bad structure. $error");
+        throw new ConfigurationNotValidException(sprintf(
+            'Configuration %s has bad structure: %s',
+            $key,
+            $error
+        ));
     }
 
     /**
@@ -168,12 +172,17 @@ class ConfigurationFactory
      *
      * @param DriverInterface $provider
      * @param string $key key for configuration
-     * @throws Exception
+     * @throws ConfigurationNotFoundException
      */
     private static function assertConfigurationExists(DriverInterface $provider, $key)
     {
-        if (!$provider->keyExists($key)) {
-            throw new Exception("Configuration $key not found in configuration object");
+        if ($provider->keyExists($key)) {
+            return;
         }
+
+        throw new ConfigurationNotFoundException(sprintf(
+            'Configuration %s not found in configuration object',
+            $key
+        ));
     }
 }

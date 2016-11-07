@@ -44,7 +44,7 @@ class ConfigurationProvider implements ServiceProviderInterface
                 }
 
                 if (true === $app['config.require_tenant'] && empty($tenant)) {
-                    throw new Exception('Tenant header or environment setting must be provided.');
+                    throw new ConfigurationException('Tenant header or environment setting must be provided.');
                 }
 
                 return $tenant;
