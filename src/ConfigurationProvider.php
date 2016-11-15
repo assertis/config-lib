@@ -20,30 +20,31 @@ class ConfigurationProvider implements ServiceProviderInterface
     {
         $runtime = new RuntimeSettings($_SERVER, $_GET);
 
-        $app['config.is_dev'] = $runtime->isDev();
+        if (!isset($app['config.is_dev'])) {
+            $app['config.is_dev'] = $runtime->isDev();
+        }
 
         if (!isset($app['config.environment'])) {
             $app['config.environment'] = $runtime->getEnv();
         }
 
-        if (!isset($app['config.require_tenant'])) {
-            $app['config.require_tenant'] = false;
-        }
+        $app['config.is_tenant_based'] = function (Container $app) {
+            return !empty($app['config.tenant_based']);
+        };
 
-        if (!empty($app['config.tenant_based'])) {
-            $app['config.require_tenant'] = true;
-        }
+        $app['config.is_tenant_required'] = function (Container $app) {
+            return !empty($app['config.require_tenant']) || $app['config.is_tenant_based'];
+        };
 
         if (!isset($app['config.tenant'])) {
             $app['config.tenant'] = function (Container $app) use ($runtime) {
-
                 $tenant = $runtime->getTenant();
 
-                if (empty($tenant)) {
+                if (!$app['config.is_tenant_based'] && empty($tenant)) {
                     $tenant = $app['config']->get('tenant');
                 }
 
-                if (true === $app['config.require_tenant'] && empty($tenant)) {
+                if ($app['config.is_tenant_required'] && empty($tenant)) {
                     throw new ConfigurationException('Tenant header or environment setting must be provided.');
                 }
 
@@ -99,7 +100,7 @@ class ConfigurationProvider implements ServiceProviderInterface
             $helper = $app['config.helper'];
 
             /** @var ConfigurationFactory $factory */
-            $factory = empty($app['config.tenant_based']) ? $app['config.factory'] : $app['config.factory.tenant'];
+            $factory = $app['config.is_tenant_based'] ? $app['config.factory.tenant'] : $app['config.factory'];
 
             return $factory->load(
                 $helper->getEnvironment(),
