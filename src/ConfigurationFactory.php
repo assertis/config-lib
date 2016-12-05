@@ -132,14 +132,14 @@ class ConfigurationFactory
      * @param ConfigurationArray $configuration
      * @param string $key
      * @param ValidatorInterface $validator
-     * @param array $constraints
+     * @param Constraint|Constraint[] $constraints
      * @throws ConfigurationNotFoundException
      */
     public static function assertMatchesSchema(
         ConfigurationArray $configuration,
         string $key,
         ValidatorInterface $validator,
-        array $constraints
+        $constraints
     ) {
         $violations = $validator->validate($configuration->getAll()->getArrayCopy(), $constraints);
 
