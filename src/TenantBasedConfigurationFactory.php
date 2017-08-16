@@ -50,32 +50,32 @@ class TenantBasedConfigurationFactory extends ConfigurationFactory
     private $tenant;
 
     /**
-     * @param DriverInterface $provider
+     * @param DriverInterface $driver
      * @param null|ValidatorInterface $validator
      * @param string $tenant
      */
     public function __construct(
-        DriverInterface $provider,
+        DriverInterface $driver,
         ValidatorInterface $validator = null,
         string $tenant
     ) {
-        parent::__construct($provider, $validator);
+        parent::__construct($driver, $validator);
         $this->tenant = $tenant;
     }
 
     /**
-     * @param DriverInterface $provider
-     * @param string $key
+     * @param DriverInterface $driver
+     * @param string $source
      * @param array $default
      * @return ConfigurationArray|LazyConfigurationArray
      * @throws ConfigurationNotFoundException
      */
     protected function doLoad(
-        DriverInterface $provider,
-        string $key = self::DEFAULT_KEY,
+        DriverInterface $driver,
+        string $source = self::DEFAULT_KEY,
         array $default = []
     ): ConfigurationArray {
-        $config = parent::doLoad($provider, $key, $default);
+        $config = parent::doLoad($driver, $source, $default);
 
         /** @var ConfigurationArray $all */
         $all = $config->get(self::ALL_TENANT_KEY);
@@ -84,14 +84,14 @@ class TenantBasedConfigurationFactory extends ConfigurationFactory
             throw new ConfigurationNotFoundException(sprintf(
                 'Configuration for tenant %s does not exist in environment %s',
                 $this->tenant,
-                $key
+                $source
             ));
         }
 
         /** @var ConfigurationArray $tenantSpecific */
         $tenantSpecific = $config->get($this->tenant);
 
-        return new ConfigurationArray(array_merge_recursive(
+        return new ConfigurationArray(array_replace_recursive(
             $all->getSettings(),
             $tenantSpecific->getSettings()
         ));
