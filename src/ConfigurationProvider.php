@@ -37,12 +37,6 @@ class ConfigurationProvider implements ServiceProviderInterface
      */
     public function register(Container $app)
     {
-        if (!isset($app['config.environment'])) {
-            $app['config.environment'] = function (Container $app) {
-                return $this->getRuntimeSettings($app)->getEnv();
-            };
-        }
-
         $app['config.is_tenant_based'] = function (Container $app) {
             return !empty($app['config.tenant_based']);
         };
@@ -51,11 +45,25 @@ class ConfigurationProvider implements ServiceProviderInterface
             return !empty($app['config.require_tenant']) || $app['config.is_tenant_based'];
         };
 
+        $app['config.runtime'] = function(Container $app) {
+            return $this->getRuntimeSettings($app);
+        };
+        
+        if (!isset($app['config.is_dev'])) {
+            $app['config.is_dev'] = function (Container $app) {
+                return $app['config.runtime']->isDev();
+            };
+        }
+
+        if (!isset($app['config.environment'])) {
+            $app['config.environment'] = function (Container $app) {
+                return $app['config.runtime']->getEnv();
+            };
+        }
+
         if (!isset($app['config.tenant'])) {
             $app['config.tenant'] = function (Container $app) {
-                $runtime = $this->getRuntimeSettings($app);
-
-                $tenant = $runtime->getTenant();
+                $tenant = $app['config.runtime']->getTenant();
 
                 if (!$app['config.is_tenant_based'] && empty($tenant)) {
                     $tenant = $app['config']->get('tenant');
