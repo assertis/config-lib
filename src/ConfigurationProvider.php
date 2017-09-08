@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Assertis\Configuration;
 
@@ -15,19 +16,27 @@ class ConfigurationProvider implements ServiceProviderInterface
 {
     /**
      * @param Container $app
+     * @return RuntimeSettings
+     */
+    private function getRuntimeSettings(Container $app): RuntimeSettings
+    {
+        if (isset($app['request_stack']) && $app['request_stack']->getCurrentRequest()) {
+            $request = $app['request_stack']->getCurrentRequest();
+            $serverVariables = $request->server->all();
+            $urlParams = array_merge($request->query->all(), $request->request->all());
+        } else {
+            $serverVariables = $_SERVER;
+            $urlParams = array_merge($_GET, $_POST);
+        }
+
+        return new RuntimeSettings($serverVariables, $urlParams);
+    }
+
+    /**
+     * @param Container $app
      */
     public function register(Container $app)
     {
-        $runtime = new RuntimeSettings($_SERVER, $_GET);
-
-        if (!isset($app['config.is_dev'])) {
-            $app['config.is_dev'] = $runtime->isDev();
-        }
-
-        if (!isset($app['config.environment'])) {
-            $app['config.environment'] = $runtime->getEnv();
-        }
-
         $app['config.is_tenant_based'] = function (Container $app) {
             return !empty($app['config.tenant_based']);
         };
@@ -36,9 +45,25 @@ class ConfigurationProvider implements ServiceProviderInterface
             return !empty($app['config.require_tenant']) || $app['config.is_tenant_based'];
         };
 
+        $app['config.runtime'] = function(Container $app) {
+            return $this->getRuntimeSettings($app);
+        };
+        
+        if (!isset($app['config.is_dev'])) {
+            $app['config.is_dev'] = function (Container $app) {
+                return $app['config.runtime']->isDev();
+            };
+        }
+
+        if (!isset($app['config.environment'])) {
+            $app['config.environment'] = function (Container $app) {
+                return $app['config.runtime']->getEnv();
+            };
+        }
+
         if (!isset($app['config.tenant'])) {
-            $app['config.tenant'] = function (Container $app) use ($runtime) {
-                $tenant = $runtime->getTenant();
+            $app['config.tenant'] = function (Container $app) {
+                $tenant = $app['config.runtime']->getTenant();
 
                 if (!$app['config.is_tenant_based'] && empty($tenant)) {
                     $tenant = $app['config']->get('tenant');
