@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace Assertis\Configuration;
 
@@ -15,17 +16,31 @@ class ConfigurationProvider implements ServiceProviderInterface
 {
     /**
      * @param Container $app
+     * @return RuntimeSettings
+     */
+    private function getRuntimeSettings(Container $app): RuntimeSettings
+    {
+        if (isset($app['request_stack']) && $app['request_stack']->getCurrentRequest()) {
+            $request = $app['request_stack']->getCurrentRequest();
+            $serverVariables = $request->server->all();
+            $urlParams = array_merge($request->query->all(), $request->request->all());
+        } else {
+            $serverVariables = $_SERVER;
+            $urlParams = array_merge($_GET, $_POST);
+        }
+
+        return new RuntimeSettings($serverVariables, $urlParams);
+    }
+
+    /**
+     * @param Container $app
      */
     public function register(Container $app)
     {
-        $runtime = new RuntimeSettings($_SERVER, $_GET);
-
-        if (!isset($app['config.is_dev'])) {
-            $app['config.is_dev'] = $runtime->isDev();
-        }
-
         if (!isset($app['config.environment'])) {
-            $app['config.environment'] = $runtime->getEnv();
+            $app['config.environment'] = function (Container $app) {
+                return $this->getRuntimeSettings($app)->getEnv();
+            };
         }
 
         $app['config.is_tenant_based'] = function (Container $app) {
@@ -37,7 +52,9 @@ class ConfigurationProvider implements ServiceProviderInterface
         };
 
         if (!isset($app['config.tenant'])) {
-            $app['config.tenant'] = function (Container $app) use ($runtime) {
+            $app['config.tenant'] = function (Container $app) {
+                $runtime = $this->getRuntimeSettings($app);
+
                 $tenant = $runtime->getTenant();
 
                 if (!$app['config.is_tenant_based'] && empty($tenant)) {
