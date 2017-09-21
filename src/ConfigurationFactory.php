@@ -45,6 +45,7 @@ class ConfigurationFactory
     const ENV_INTEGRATION = 'integration';
     const ENV_TEST = 'test';
     const ENV_UAT_SLEEPER = 'uat-sleeper';
+    const ENV_SID = 'sid';
     const ENV_PROD = 'prod';
     const ENV_COMMON = 'common';
 
