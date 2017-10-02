@@ -1,11 +1,10 @@
 <?php
+declare(strict_types=1);
 
 namespace Assertis\Configuration;
 
 use PHPUnit_Framework_TestCase;
-use Silex\Application;
 use stdClass;
-use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * @author Michał Tatarynowicz <michal.tatarynowicz@assertis.co.uk>
@@ -19,7 +18,18 @@ class RuntimeSettingsTest extends PHPUnit_Framework_TestCase
         $settings = new RuntimeSettings([], []);
 
         $this->assertSame($default, $settings->getValue('foo', $default));
-        $this->assertSame(null, $settings->getValue('Foo'));
+        $this->assertNull($settings->getValue('Foo'));
+    }
+
+    public function testGetFromExtra()
+    {
+        $value = new stdClass();
+
+        $settings = new RuntimeSettings([], [], ['Foo' => $value]);
+
+        $this->assertNull($settings->getValue('foo'));
+        $this->assertSame($value, $settings->getValue('Foo'));
+        $this->assertNull($settings->getValue('FOO'));
     }
 
     public function testGetFromHeader()
@@ -39,9 +49,9 @@ class RuntimeSettingsTest extends PHPUnit_Framework_TestCase
 
         $settings = new RuntimeSettings(['Foo' => $value], []);
 
-        $this->assertSame(null, $settings->getValue('foo'));
+        $this->assertNull($settings->getValue('foo'));
         $this->assertSame($value, $settings->getValue('Foo'));
-        $this->assertSame(null, $settings->getValue('FOO'));
+        $this->assertNull($settings->getValue('FOO'));
     }
 
     public function testGetFromUrl()
@@ -58,31 +68,30 @@ class RuntimeSettingsTest extends PHPUnit_Framework_TestCase
     /**
      * @return array
      */
-    public function provideHeaderHasPrecedence()
+    public function providePrecedence(): array
     {
         return [
             [
-                ['HTTP_X_FOO' => 'header'],
+                ['HTTP_X_FOO' => 'header', 'Foo' => 'environment'],
                 ['foo' => 'get'],
+                ['Foo' => 'extra'],
+                'extra',
+            ],
+            [
+                ['HTTP_X_FOO' => 'header', 'Foo' => 'environment'],
+                ['foo' => 'get'],
+                [],
                 'get',
             ],
             [
-                ['HTTP_X_FOO' => 'header', 'Foo' => 'environment',],
+                ['HTTP_X_FOO' => 'header', 'Foo' => 'environment'],
+                [],
                 [],
                 'header',
             ],
             [
-                ['Foo' => 'environment',],
-                ['foo' => 'get'],
-                'get',
-            ],
-            [
-                ['HTTP_X_FOO' => 'header', 'Foo' => 'environment',],
-                ['foo' => 'get'],
-                'get',
-            ],
-            [
-                ['Foo' => 'environment',],
+                ['Foo' => 'environment'],
+                [],
                 [],
                 'environment',
             ],
@@ -90,11 +99,15 @@ class RuntimeSettingsTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider provideHeaderHasPrecedence
+     * @dataProvider providePrecedence
+     * @param array $server
+     * @param array $get
+     * @param array $extra
+     * @param string $expected
      */
-    public function testHeaderHasPrecedence($server, $get, $expected)
+    public function testPrecedence(array $server, array $get, array $extra, string $expected)
     {
-        $settings = new RuntimeSettings($server, $get);
+        $settings = new RuntimeSettings($server, $get, $extra);
 
         $this->assertSame($expected, $settings->getValue('Foo'));
     }
