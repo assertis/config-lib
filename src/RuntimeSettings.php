@@ -126,10 +126,12 @@ class RuntimeSettings
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getRequestUri(): string
+    public function getRequestUri(): ?string
     {
-        return $this->serverVariables[self::URI_KEY];
+        return array_key_exists(self::URI_KEY, $this->serverVariables) ?
+            $this->serverVariables[self::URI_KEY] :
+            null;
     }
 }
