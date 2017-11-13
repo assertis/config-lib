@@ -20,6 +20,8 @@ class RuntimeSettings
     const TENANT_KEY = 'TENANT';
     const TENANT_DEFAULT = null;
 
+    const URI_KEY = 'REQUEST_URI';
+
     /**
      * @var array
      */
@@ -121,5 +123,13 @@ class RuntimeSettings
         $key = 'HTTP_X_' . str_replace('-', '_', strtoupper($name));
 
         return array_key_exists($key, $this->serverVariables) ? $this->serverVariables[$key] : null;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRequestUri(): string
+    {
+        return $this->serverVariables[self::URI_KEY];
     }
 }
