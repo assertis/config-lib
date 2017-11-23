@@ -116,13 +116,31 @@ class RuntimeSettings
 
     /**
      * @param string $name
+     * @return bool
+     */
+    public function hasHeader(string $name): bool
+    {
+        return array_key_exists($this->getHeaderKey($name), $this->serverVariables);
+    }
+
+    /**
+     * @param string $name
      * @return mixed|null
      */
-    private function getHeader(string $name)
+    public function getHeader(string $name)
     {
-        $key = 'HTTP_X_' . str_replace('-', '_', strtoupper($name));
+        return $this->hasHeader($name) ?
+            $this->serverVariables[$this->getHeaderKey($name)] :
+            null;
+    }
 
-        return array_key_exists($key, $this->serverVariables) ? $this->serverVariables[$key] : null;
+    /**
+     * @param string $name
+     * @return string
+     */
+    private function getHeaderKey(string $name): string
+    {
+        return 'HTTP_X_' . str_replace('-', '_', strtoupper($name));
     }
 
     /**
