@@ -6,6 +6,7 @@ namespace Assertis\Configuration;
 use Assertis\Configuration\Collection\ConfigurationArray;
 use Assertis\Configuration\Collection\LazyConfigurationArray;
 use Assertis\Configuration\Drivers\DriverInterface;
+use Exception;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
@@ -95,5 +96,23 @@ class TenantBasedConfigurationFactory extends ConfigurationFactory
             $all->getSettings(),
             $tenantSpecific->getSettings()
         ));
+    }
+
+    /**
+     * List all tenants in selected environment.
+     *
+     * @param DriverInterface $driver
+     * @param string $source
+     * @return array
+     * @throws Exception
+     */
+    public static function getTenants(DriverInterface $driver, string $source): array
+    {
+        $config = parent::init($driver, $source);
+        $ignored = [self::ALL_TENANT_KEY, self::COMMENT_KEY];
+        
+        $keys = array_keys($config->getAll()->getArrayCopy());
+        
+        return array_values(array_diff($keys, $ignored));
     }
 }

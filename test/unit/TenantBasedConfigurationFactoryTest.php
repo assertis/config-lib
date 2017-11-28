@@ -100,4 +100,24 @@ class TenantBasedConfigurationFactoryTest extends PHPUnit_Framework_TestCase
 
         static::assertSame($expected, $this->factory->load('env', $common)->getAll()->getArrayCopy());
     }
+    
+    public function testListingTenants()
+    {
+        $env = [
+            'comment' => '',
+            '@all'   => [],
+            'tenant' => [],
+            'tenant2' => [],
+        ];
+
+        $expected = [
+            'tenant',
+            'tenant2'
+        ];
+
+        $this->driver->method('keyExists')->with('env')->willReturn(true);
+        $this->driver->method('getSettings')->with('env')->willReturn($env);
+
+        static::assertSame($expected, TenantBasedConfigurationFactory::getTenants($this->driver, 'env'));
+    }
 }

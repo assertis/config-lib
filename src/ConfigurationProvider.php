@@ -45,10 +45,12 @@ class ConfigurationProvider implements ServiceProviderInterface
             return !empty($app['config.require_tenant']) || $app['config.is_tenant_based'];
         };
 
-        $app['config.runtime'] = function(Container $app) {
-            return $this->getRuntimeSettings($app);
+        $app['config.runtime'] = function (Container $app) {
+            return isset($app[RuntimeSettings::class])
+                ? $app[RuntimeSettings::class]
+                : $this->getRuntimeSettings($app);
         };
-        
+
         if (!isset($app['config.is_dev'])) {
             $app['config.is_dev'] = function (Container $app) {
                 return $app['config.runtime']->isDev();
