@@ -40,6 +40,8 @@ class ConfigurationFactory
      * @var string
      */
     const DEFAULT_KEY = self::ENV_DEV;
+    
+    const COMMENT_KEY = 'comment';
 
     const ENV_DEV = 'dev';
     const ENV_INTEGRATION = 'integration';
