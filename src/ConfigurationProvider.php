@@ -65,7 +65,15 @@ class ConfigurationProvider implements ServiceProviderInterface
 
         if (!isset($app['config.tenant'])) {
             $app['config.tenant'] = function (Container $app) {
-                $tenant = $app['config.runtime']->getTenant();
+                
+                if (!empty($app['config.use_default_tenant'])) {
+                    $tenant = TenantBasedConfigurationFactory::getDefaultTenant(
+                        $app['config.driver'],
+                        $app['config.environment']
+                    );
+                } else {
+                    $tenant = $app['config.runtime']->getTenant();
+                }
 
                 if (!$app['config.is_tenant_based'] && empty($tenant)) {
                     $tenant = $app['config']->get('tenant');

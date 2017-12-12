@@ -132,6 +132,18 @@ class ConfigurationFactory
     }
 
     /**
+     * @param string $environment
+     * @return bool
+     */
+    public static function isDebug(string $environment): bool
+    {
+        return in_array(
+            $environment,
+            [self::ENV_DEV, self::ENV_INTEGRATION, self::ENV_TEST]
+        );
+    }
+
+    /**
      * Validate configuration
      * @param ConfigurationArray $configuration
      * @param string $key

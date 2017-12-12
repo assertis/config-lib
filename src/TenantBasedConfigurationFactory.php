@@ -7,6 +7,7 @@ use Assertis\Configuration\Collection\ConfigurationArray;
 use Assertis\Configuration\Collection\LazyConfigurationArray;
 use Assertis\Configuration\Drivers\DriverInterface;
 use Exception;
+use RuntimeException;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 /**
@@ -114,5 +115,22 @@ class TenantBasedConfigurationFactory extends ConfigurationFactory
         $keys = array_keys($config->getAll()->getArrayCopy());
         
         return array_values(array_diff($keys, $ignored));
+    }
+
+    /**
+     * @param DriverInterface $driver
+     * @param string $source
+     * @return string
+     * @throws Exception
+     */
+    public static function getDefaultTenant(DriverInterface $driver, string $source): string
+    {
+        $tenants = self::getTenants($driver, $source);
+        
+        if (empty($tenants)) {
+            throw new RuntimeException('No tenants found');
+        }
+        
+        return $tenants[0];
     }
 }
