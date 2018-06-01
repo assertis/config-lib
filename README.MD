@@ -80,3 +80,35 @@ $app->register(new ConfigurationProvider(), [
     'config.validator.constraints' => null
 ]);
 ```
+
+## Add new tenant to configuration
+
+1) First of all your service should have something called tenant schema.
+2) Put your regular tenant body into `config/schema/tenant.json`
+e.g.
+```json
+{
+  "database": {
+    "order": {
+      "dsn": "mysql:host=127.0.0.1;dbname=",
+      "username": "root",
+      "password": ""
+    }
+  },
+  "nlc": "",
+  "barcode_key": "",
+  "issuer_id": ""
+}
+``` 
+
+3) Now in your service you should be able to add tenant to specific config file
+```bash
+php vendor/assertis/config-lib/src/Scripts/AddTenant.php {tenantName} {configFileName}  [tenantSchemaFile]
+```
+
+If tenantSchemaFile is in different localization than `config/schema/tenant.json` please provide it as a last parameter.
+E.g. of usage
+
+```bash
+php vendor/assertis/config-lib/src/Scripts/AddTenant.php hex-qa-b2b stage.json
+```
