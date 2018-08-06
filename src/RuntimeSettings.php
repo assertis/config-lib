@@ -48,17 +48,17 @@ class RuntimeSettings
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getEnv(): string
+    public function getEnv(): ?string
     {
         return $this->getValue(self::ENV_KEY, self::ENV_DEFAULT);
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getTenant(): string
+    public function getTenant(): ?string
     {
         return $this->getValue(self::TENANT_KEY, self::TENANT_DEFAULT);
     }
