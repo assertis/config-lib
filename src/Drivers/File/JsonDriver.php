@@ -2,6 +2,8 @@
 
 namespace Assertis\Configuration\Drivers\File;
 
+use Assertis\Configuration\JsonDecodeException;
+
 /**
  * @package Assertis\Configuration\Drivers\File
  * @author Maciej Romanski <maciej.romanski@assertis.co.uk>
@@ -24,5 +26,20 @@ class JsonDriver extends AbstractFileDriver
     protected function parse($file)
     {
         return json_decode(file_get_contents($file), true);
+    }
+
+    /**
+     * @param $file
+     * @throws JsonDecodeException
+     */
+    public function validate($file)
+    {
+        $path = $this->getFilePath($file);
+        $json = file_get_contents($path);
+        json_decode($json);
+
+        if(json_last_error() !== JSON_ERROR_NONE) {
+            throw new JsonDecodeException(json_last_error());
+        }
     }
 }
