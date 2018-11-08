@@ -3,6 +3,7 @@
 namespace Assertis\Configuration;
 
 use Assertis\Configuration\Collection\ConfigurationArray;
+use Assertis\Configuration\Drivers\File\JsonDriver;
 use Assertis\Configuration\Drivers\SourceDriver;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintValidatorFactory;
@@ -68,5 +69,15 @@ class ConfigurationFactoryTest extends \PHPUnit_Framework_TestCase
     {
         $factory = new ConfigurationFactory(new SourceDriver([]));
         $factory->load();
+    }
+
+    /**
+     * @expectedException \Assertis\Configuration\ConfigurationJsonException
+     * (custom exceptions need FQCN here)
+     */
+    public function testSourceValidation()
+    {
+        $driver = new JsonDriver(ROOT . 'test/resources/');
+        ConfigurationFactory::init($driver, 'test-incorrect');
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Assertis\Configuration\Drivers\File;
 
-use Assertis\Configuration\JsonDecodeException;
+use Assertis\Configuration\ConfigurationJsonException;
 
 /**
  * @package Assertis\Configuration\Drivers\File
@@ -30,7 +30,7 @@ class JsonDriver extends AbstractFileDriver
 
     /**
      * @param $file
-     * @throws JsonDecodeException
+     * @throws ConfigurationJsonException
      */
     public function validate($file)
     {
@@ -38,8 +38,8 @@ class JsonDriver extends AbstractFileDriver
         $json = file_get_contents($path);
         json_decode($json);
 
-        if(json_last_error() !== JSON_ERROR_NONE) {
-            throw new JsonDecodeException(json_last_error());
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new ConfigurationJsonException(json_last_error());
         }
     }
 }

@@ -2,6 +2,8 @@
 
 namespace Assertis\Configuration\Drivers\File;
 
+
+
 /**
  * @author Maciej Romanski <maciej.romanski@assertis.co.uk>
  */
@@ -21,5 +23,15 @@ class JsonDriverTest extends \PHPUnit_Framework_TestCase
 
         $this->assertInternalType('array', $settings);
         $this->assertSame('json', $settings['testKey']);
+    }
+
+    /**
+     * @expectedException \Assertis\Configuration\ConfigurationJsonException
+     * (custom exceptions need FQCN here)
+     */
+    public function testValidate()
+    {
+        $provider = new JsonDriver($this->path);
+        $provider->validate('test-incorrect');
     }
 }

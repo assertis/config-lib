@@ -5,10 +5,7 @@
 
 namespace Assertis\Configuration;
 
-
-use JsonException;
-
-class JsonDecodeException extends JsonException
+class ConfigurationJsonException extends ConfigurationException
 {
     public function __construct($code = JSON_ERROR_NONE, \Exception $previous = null)
     {
