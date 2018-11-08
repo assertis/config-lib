@@ -125,6 +125,7 @@ class ConfigurationFactory
         }
 
         self::assertSourceExists($driver, $source);
+        self::assertSourceIsValid($driver, $source);
 
         $settings = $driver->getSettings($source);
 
@@ -200,5 +201,16 @@ class ConfigurationFactory
             'Configuration %s not found in configuration object',
             $source
         ));
+    }
+
+    /**
+     * @param DriverInterface $driver
+     * @param $source
+     */
+    private static function assertSourceIsValid(DriverInterface $driver, $source)
+    {
+        if (is_callable([$driver,'validate'])) {
+            call_user_func([$driver,'validate'], $source);
+        }
     }
 }

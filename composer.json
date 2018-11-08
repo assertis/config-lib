@@ -19,7 +19,8 @@
     "pimple/pimple": "^3.0",
     "monolog/monolog": "^1.17",
     "symfony/validator": "^3.0",
-    "symfony/yaml": "^2.8 | ^3.0"
+    "symfony/yaml": "^2.8 | ^3.0",
+    "ext-json": "*"
   },
   "require-dev": {
     "symfony/var-dumper": "*",
