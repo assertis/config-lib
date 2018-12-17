@@ -85,10 +85,12 @@ class ConfigurationProvider implements ServiceProviderInterface
                  * /healthcheck
                  * /status
                  */
-                $app['config.require_tenant_exceptions'] = array_merge([
-                    '/status',
-                    '/healthcheck'
-                ], $app['config.require_tenant_exceptions'] ?? []);
+                $app['config.require_tenant_exceptions'] = array_unique(
+                    array_merge([
+                        '/status',
+                        '/healthcheck'
+                    ], $app['config.require_tenant_exceptions'] ?? [])
+                );
 
                 if ($app['config.is_tenant_required']
                     && empty($tenant)
