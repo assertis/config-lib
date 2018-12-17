@@ -65,7 +65,7 @@ class ConfigurationProvider implements ServiceProviderInterface
 
         if (!isset($app['config.tenant'])) {
             $app['config.tenant'] = function (Container $app) {
-                
+
                 if (!empty($app['config.use_default_tenant'])) {
                     $tenant = TenantBasedConfigurationFactory::getDefaultTenant(
                         $app['config.driver'],
@@ -79,7 +79,20 @@ class ConfigurationProvider implements ServiceProviderInterface
                     $tenant = $app['config']->get('tenant');
                 }
 
-                if ($app['config.is_tenant_required'] && empty($tenant)) {
+                /*
+                 * Add possibility to not require X-Tenant for some endpoints.
+                 * Two endpoints shouldn't require tenant as default
+                 * /healthcheck
+                 * /status
+                 */
+                $app['config.require_tenant_exceptions'] = array_merge([
+                    '/status',
+                    '/healthcheck'
+                ], $app['config.require_tenant_exceptions'] ?? []);
+
+                if ($app['config.is_tenant_required']
+                    && empty($tenant)
+                    && !in_array($this->getRuntimeSettings($app)->getRequestUri(), $app['config.require_tenant_exceptions'])) {
                     throw new ConfigurationException('Tenant header or environment setting must be provided.');
                 }
 
