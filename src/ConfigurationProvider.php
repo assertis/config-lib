@@ -80,21 +80,12 @@ class ConfigurationProvider implements ServiceProviderInterface
                 }
 
                 /*
-                 * Add possibility to not require X-Tenant for some endpoints.
-                 * Two endpoints shouldn't require tenant as default
-                 * /healthcheck
-                 * /status
+                 * Add possibility to not require X-Tenant for some defined endpoints.
                  */
-                $app['config.require_tenant_exceptions'] = array_unique(
-                    array_merge([
-                        '/status',
-                        '/healthcheck'
-                    ], $app['config.require_tenant_exceptions'] ?? [])
-                );
-
                 if ($app['config.is_tenant_required']
                     && empty($tenant)
-                    && !in_array($this->getRuntimeSettings($app)->getRequestUri(), $app['config.require_tenant_exceptions'])) {
+                    && !empty($app['config.exceptions'])
+                    && !in_array($this->getRuntimeSettings($app)->getRequestUri(), $app['config.exceptions'])) {
                     throw new ConfigurationException('Tenant header or environment setting must be provided.');
                 }
 
