@@ -39,18 +39,16 @@ class ConfigurationProvider implements ServiceProviderInterface
         };
 
         $app['config.effective_current_url'] = function (Container $app) {
-            return $app['config.current_url'] ?: $this->getRuntimeSettings()->getRequestUri();
+            return $app['config.current_url'] ?? $this->getRuntimeSettings()->getRequestUri();
         };
 
         $app['config.tenant.default'] = function (Container $app) {
-            if (isset($app['config.default_tenant_provider'])) {
-                return $app['config.default_tenant_provider'];
-            }
-
-            return TenantBasedConfigurationFactory::getDefaultTenant(
-                $app['config.driver'],
-                $app['config.environment']
-            );
+            return
+                $app['config.default_tenant_provider']
+                ?? TenantBasedConfigurationFactory::getDefaultTenant(
+                    $app['config.driver'],
+                    $app['config.environment']
+                );
         };
 
         if (!isset($app['config.is_dev'])) {
