@@ -15,28 +15,17 @@ use Pimple\ServiceProviderInterface;
 class ConfigurationProvider implements ServiceProviderInterface
 {
     /**
-     * @param Container $app
-     * @return RuntimeSettings
+     * @var Container
      */
-    private function getRuntimeSettings(Container $app): RuntimeSettings
-    {
-        if (isset($app['request_stack']) && $app['request_stack']->getCurrentRequest()) {
-            $request = $app['request_stack']->getCurrentRequest();
-            $serverVariables = $request->server->all();
-            $urlParams = array_merge($request->query->all(), $request->request->all());
-        } else {
-            $serverVariables = $_SERVER;
-            $urlParams = array_merge($_GET, $_POST);
-        }
-
-        return new RuntimeSettings($serverVariables, $urlParams);
-    }
+    private $app;
 
     /**
      * @param Container $app
      */
     public function register(Container $app)
     {
+        $this->app = $app;
+
         $app['config.is_tenant_based'] = function (Container $app) {
             return !empty($app['config.tenant_based']);
         };
@@ -46,9 +35,22 @@ class ConfigurationProvider implements ServiceProviderInterface
         };
 
         $app['config.runtime'] = function (Container $app) {
-            return isset($app[RuntimeSettings::class])
-                ? $app[RuntimeSettings::class]
-                : $this->getRuntimeSettings($app);
+            return $app[RuntimeSettings::class] ?? $this->getRuntimeSettings();
+        };
+
+        $app['config.effective_current_url'] = function (Container $app) {
+            return $app['config.current_url'] ?: $this->getRuntimeSettings()->getRequestUri();
+        };
+
+        $app['config.tenant.default'] = function (Container $app) {
+            if (isset($app['config.default_tenant_provider'])) {
+                return $app['config.default_tenant_provider'];
+            }
+
+            return TenantBasedConfigurationFactory::getDefaultTenant(
+                $app['config.driver'],
+                $app['config.environment']
+            );
         };
 
         if (!isset($app['config.is_dev'])) {
@@ -67,26 +69,21 @@ class ConfigurationProvider implements ServiceProviderInterface
             $app['config.tenant'] = function (Container $app) {
 
                 if (!empty($app['config.use_default_tenant'])) {
-                    $tenant = TenantBasedConfigurationFactory::getDefaultTenant(
-                        $app['config.driver'],
-                        $app['config.environment']
-                    );
-                } else {
-                    $tenant = $app['config.runtime']->getTenant();
+                    return $app['config.tenant.default'];
                 }
 
-                if (!$app['config.is_tenant_based'] && empty($tenant)) {
+                $tenant = $app['config.runtime']->getTenant();
+
+                if (empty($tenant) && !$app['config.is_tenant_required']) {
                     $tenant = $app['config']->get('tenant');
                 }
 
-                /*
-                 * Add possibility to not require X-Tenant for some defined endpoints.
-                 */
-                if ($app['config.is_tenant_required']
-                    && empty($tenant)
-                    && !empty($app['config.exceptions'])
-                    && !in_array($this->getRuntimeSettings($app)->getRequestUri(), $app['config.exceptions'])) {
-                    throw new ConfigurationException('Tenant header or environment setting must be provided.');
+                if (empty($tenant) && $app['config.is_tenant_required']) {
+                    if ($this->isRequiredTenantException()) {
+                        $tenant = $app['config.tenant.default'];
+                    } else {
+                        throw new ConfigurationException('Tenant header or environment setting must be provided.');
+                    }
                 }
 
                 return $tenant;
@@ -109,7 +106,7 @@ class ConfigurationProvider implements ServiceProviderInterface
             try {
                 return ConfigurationFactory::init($app['config.driver'], ConfigurationFactory::ENV_COMMON, [])
                     ->getSettings();
-            } catch (Exception $e) {
+            } catch (Exception $ex) {
                 // This means that the common file doesn't exist. Not a problem.
                 return [];
             }
@@ -149,5 +146,32 @@ class ConfigurationProvider implements ServiceProviderInterface
                 $helper->getValidationConstraints()
             );
         };
+    }
+
+    private function isRequiredTenantException(): bool
+    {
+        if (empty($this->app['config.exceptions'])) {
+            return false;
+        }
+
+        return in_array($this->app['config.effective_current_url'], $this->app['config.exceptions'], true);
+    }
+
+    /**
+     * @param Container $app
+     * @return RuntimeSettings
+     */
+    private function getRuntimeSettings(): RuntimeSettings
+    {
+        if (isset($this->app['request_stack']) && $this->app['request_stack']->getCurrentRequest()) {
+            $request = $this->app['request_stack']->getCurrentRequest();
+            $serverVariables = $request->server->all();
+            $urlParams = array_merge($request->query->all(), $request->request->all());
+        } else {
+            $serverVariables = $_SERVER;
+            $urlParams = array_merge($_GET, $_POST);
+        }
+
+        return new RuntimeSettings($serverVariables, $urlParams);
     }
 }
