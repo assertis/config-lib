@@ -7,6 +7,7 @@ use Assertis\Configuration\Drivers\File\JsonDriver;
 use PHPUnit_Framework_MockObject_MockObject;
 use PHPUnit_Framework_TestCase;
 use Pimple\Container;
+use Symfony\Component\HttpFoundation\HeaderBag;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
@@ -35,6 +36,7 @@ class ConfigurationProviderTest extends PHPUnit_Framework_TestCase
         $request->server = new ParameterBag(['ENV' => 'foo']);
         $request->query = new ParameterBag(['tenant' => 'bar']);
         $request->request = new ParameterBag([]);
+        $request->headers = new HeaderBag([]);
 
         $stack = $this->createMock(RequestStack::class);
         $stack->method('getCurrentRequest')->willReturn($request);

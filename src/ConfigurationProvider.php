@@ -6,6 +6,7 @@ namespace Assertis\Configuration;
 use Exception;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 /**
  * Silex provider for configuration module
@@ -39,7 +40,7 @@ class ConfigurationProvider implements ServiceProviderInterface
         };
 
         $app['config.effective_current_url'] = function (Container $app) {
-            return $app['config.current_url'] ?? $this->getRuntimeSettings()->getRequestUri();
+            return $app['config.current_url'] ?? $app['config.runtime']->getRequestUri();
         };
 
         $app['config.tenant.default'] = function (Container $app) {
@@ -162,14 +163,34 @@ class ConfigurationProvider implements ServiceProviderInterface
     private function getRuntimeSettings(): RuntimeSettings
     {
         if (isset($this->app['request_stack']) && $this->app['request_stack']->getCurrentRequest()) {
+            /** @var Request $request */
             $request = $this->app['request_stack']->getCurrentRequest();
             $serverVariables = $request->server->all();
             $urlParams = array_merge($request->query->all(), $request->request->all());
+            $extra = $this->getExtraValuesFromRequestHeaders($request);
         } else {
             $serverVariables = $_SERVER;
             $urlParams = array_merge($_GET, $_POST);
+            $extra = [];
         }
 
-        return new RuntimeSettings($serverVariables, $urlParams);
+        return new RuntimeSettings($serverVariables, $urlParams, $extra);
+    }
+
+    private function getExtraValuesFromRequestHeaders(Request $request): array
+    {
+        $headers = $request->headers->all();
+        $extra = [];
+
+        array_walk($headers, function (array $value, string $key) use (&$extra) {
+            if (stripos($key, 'x-') !== 0) {
+                return;
+            }
+            /** @var string $newKey */
+            $newKey = substr($key, 2);
+            $extra[$newKey] = $value[0];
+        });
+
+        return $extra;
     }
 }

@@ -27,9 +27,9 @@ class RuntimeSettingsTest extends PHPUnit_Framework_TestCase
 
         $settings = new RuntimeSettings([], [], ['Foo' => $value]);
 
-        $this->assertNull($settings->getValue('foo'));
+        $this->assertSame($value, $settings->getValue('foo'));
         $this->assertSame($value, $settings->getValue('Foo'));
-        $this->assertNull($settings->getValue('FOO'));
+        $this->assertSame($value, $settings->getValue('FOO'));
     }
 
     public function testGetFromHeader()

@@ -44,7 +44,7 @@ class RuntimeSettings
     {
         $this->serverVariables = $serverVariables;
         $this->urlParams = $urlParams;
-        $this->extra = $extra;
+        $this->extra = array_combine(array_map('strtolower', array_keys($extra)), array_values($extra));
     }
 
     /**
@@ -68,7 +68,7 @@ class RuntimeSettings
      */
     public function isDev(): bool
     {
-        return in_array(self::getEnv(), [ConfigurationFactory::ENV_DEV, ConfigurationFactory::ENV_INTEGRATION]);
+        return in_array($this->getEnv(), [ConfigurationFactory::ENV_DEV, ConfigurationFactory::ENV_INTEGRATION], true);
     }
 
     /**
@@ -91,7 +91,7 @@ class RuntimeSettings
      */
     private function getExtraParam(string $name)
     {
-        return array_key_exists($name, $this->extra) ? $this->extra[$name] : null;
+        return $this->extra[strtolower($name)] ?? null;
     }
 
     /**
