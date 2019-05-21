@@ -43,13 +43,19 @@ class ConfigurationProvider implements ServiceProviderInterface
             return $app['config.current_url'] ?? $app['config.runtime']->getRequestUri();
         };
 
+        /**
+         * If "is_tenant_based" flag is true then return default tenant from TenantBasedConfigurationFactory
+         * @param Container $app
+         * @return mixed|string
+         */
         $app['config.tenant.default'] = function (Container $app) {
-            return
-                $app['config.default_tenant_provider']
-                ?? TenantBasedConfigurationFactory::getDefaultTenant(
+            if(!$app['config.is_tenant_based'] && $app['config.default_tenant_provider']) {
+                return $app['config.default_tenant_provider'];
+            }
+            return TenantBasedConfigurationFactory::getDefaultTenant(
                     $app['config.driver'],
                     $app['config.environment']
-                );
+            );
         };
 
         if (!isset($app['config.is_dev'])) {
