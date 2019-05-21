@@ -68,4 +68,30 @@ class ConfigurationProviderTest extends PHPUnit_Framework_TestCase
 
         self::assertSame($default, $container['config.tenant']);
     }
+
+    /**
+     * Make sure that when configuration `is_tenant_based`
+     * ConfigurationProvider will return tenant from TenantBasedConfigurationFactory
+     */
+    public function testDefaultTenantFromTenantBasedConfigurationFactory()
+    {
+
+        $default = 'default-from-provider';
+
+        $container = new Container();
+        $provider = new ConfigurationProvider();
+        $provider->register($container);
+
+        $container['config.driver'] = new JsonDriver(__DIR__.'/../resources');
+        $container['config.require_tenant'] = true;
+        $container['config.exceptions'] = ['/public'];
+        $container['config.current_url'] = '/public';
+        $container['config.is_tenant_based'] = true;
+        $container['config.environment'] = 'test';
+        $container['config.default_tenant_provider'] = function () use ($default) {
+            return $default;
+        };
+
+        self::assertSame("testKey", $container['config.tenant']);
+    }
 }
