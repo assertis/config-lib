@@ -80,7 +80,7 @@ class ConfigurationFactory
 
         $configuration = $this->doLoad($this->driver, $source, $default);
 
-        if ($this->validator && $constraints && in_array($source, [self::ENV_DEV, self::ENV_TEST])) {
+        if ($this->validator && $constraints && in_array($source, [self::ENV_DEV, self::ENV_INTEGRATION, self::ENV_TEST])) {
             self::assertMatchesSchema($configuration, $source, $this->validator, $constraints);
         }
 
