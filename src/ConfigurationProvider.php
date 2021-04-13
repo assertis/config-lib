@@ -6,6 +6,7 @@ namespace Assertis\Configuration;
 use Exception;
 use Pimple\Container;
 use Pimple\ServiceProviderInterface;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -73,7 +74,7 @@ class ConfigurationProvider implements ServiceProviderInterface
 
                 $tenant = $app['config.runtime']->getTenant();
 
-                if (empty($tenant) && !$app['config.is_tenant_required']) {
+                if (!$app['config.is_tenant_based'] && empty($tenant) && !$app['config.is_tenant_required']) {
                     $tenant = $app['config']->get('tenant');
                 }
 
@@ -124,6 +125,12 @@ class ConfigurationProvider implements ServiceProviderInterface
         $app['config.factory.tenant'] = function (Container $app) {
             /** @var ConfigurationHelper $helper */
             $helper = $app['config.helper'];
+            /** @var string|null $tenant */
+            $tenant = $app['config.tenant'];
+
+            if (!$tenant) {
+                throw new RuntimeException('Tenant required');
+            }
 
             return new TenantBasedConfigurationFactory(
                 $helper->getDriver(),
