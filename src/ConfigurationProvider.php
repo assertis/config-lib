@@ -44,6 +44,10 @@ class ConfigurationProvider implements ServiceProviderInterface
             return $app['config.current_url'] ?? $app['config.runtime']->getRequestUri();
         };
 
+        $app['config.effective_current_path'] = function (Container $app) {
+            return $app['config.current_url'] ?? $app['config.runtime']->getPathInfo();
+        };
+
         $app['config.tenant.default'] = function (Container $app) {
             return
                 $app['config.default_tenant_provider']
@@ -160,7 +164,7 @@ class ConfigurationProvider implements ServiceProviderInterface
             return false;
         }
 
-        return in_array($this->app['config.effective_current_url'], $this->app['config.exceptions'], true);
+        return in_array($this->app['config.effective_current_path'], $this->app['config.exceptions'], true);
     }
 
     /**

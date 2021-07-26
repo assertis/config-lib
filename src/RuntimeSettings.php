@@ -21,6 +21,7 @@ class RuntimeSettings
     const TENANT_DEFAULT = null;
 
     const URI_KEY = 'REQUEST_URI';
+    private const PATH_KEY = 'DOCUMENT_URI';
 
     /**
      * @var array
@@ -150,6 +151,13 @@ class RuntimeSettings
     {
         return array_key_exists(self::URI_KEY, $this->serverVariables) ?
             $this->serverVariables[self::URI_KEY] :
+            null;
+    }
+
+    public function getPathInfo(): ?string
+    {
+        return array_key_exists(self::PATH_KEY, $this->serverVariables) ?
+            $this->serverVariables[self::PATH_KEY] :
             null;
     }
 }
