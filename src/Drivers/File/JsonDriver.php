@@ -15,7 +15,7 @@ class JsonDriver extends AbstractFileDriver
     /**
      * @param string $path
      */
-    public function __construct($path)
+    public function __construct(string $path)
     {
         parent::__construct($path, self::FILE_EXTENSION);
     }
@@ -39,6 +39,7 @@ class JsonDriver extends AbstractFileDriver
         json_decode($json);
 
         if (json_last_error() !== JSON_ERROR_NONE) {
+            $this->logError(sprintf("%s reading file %s from path %s: %s", json_last_error(), $file, $path, $json));
             throw new ConfigurationJsonException(json_last_error());
         }
     }

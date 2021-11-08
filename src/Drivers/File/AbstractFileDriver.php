@@ -4,12 +4,14 @@ namespace Assertis\Configuration\Drivers\File;
 
 use Assertis\Configuration\Drivers\DriverInterface;
 use Exception;
+use Psr\Log\LoggerAwareInterface;
+use Psr\Log\LoggerInterface;
 
 /**
  * @package Assertis\Configuration\Drivers
  * @author Maciej Romanski <maciej.romanski@assertis.co.uk>
  */
-abstract class AbstractFileDriver implements DriverInterface
+abstract class AbstractFileDriver implements DriverInterface, LoggerAwareInterface
 {
     /**
      * @var string
@@ -25,6 +27,11 @@ abstract class AbstractFileDriver implements DriverInterface
      * @var array[]
      */
     private $cache = [];
+
+    /**
+     * @var LoggerInterface | null
+     */
+    private $logger;
 
     /**
      * @param string $path
@@ -91,4 +98,17 @@ abstract class AbstractFileDriver implements DriverInterface
      * @throws Exception
      */
     abstract protected function parse($file);
+
+    public function setLogger(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    protected function logError(string $message): void {
+        if (!$this->logger) {
+            return;
+        }
+
+        $this->logger->error($message);
+    }
 }
